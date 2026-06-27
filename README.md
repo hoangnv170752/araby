@@ -1,5 +1,7 @@
 # أرابي · Araby
 
+<img src="./public/thumbnail.png" alt="Araby" width="100" />
+
 **Your Islamic Companion** — prayer times, Hijri calendar, Quran reader, and the 99 Names of Allah. Everything your faith needs, in one place.
 
 ---
@@ -23,8 +25,8 @@
 ## Getting Started
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -58,10 +60,10 @@ docs/
 ## Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Production build
-npm run start    # Start production server
-npm run lint     # Run ESLint
+pnpm run dev      # Start development server
+pnpm run build    # Production build
+pnpm run start    # Start production server
+pnpm run lint     # Run ESLint
 ```
 
 ## Deployment
