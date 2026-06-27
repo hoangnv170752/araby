@@ -49,6 +49,7 @@ export default function TryIt() {
     meta: { city: string; country: string; readable: string; hijri: string };
     nextIdx: number;
   } | null>(null);
+  const [countdown, setCountdown] = useState<string>("");
 
   // Hijri state - initialize with current date on client
   const [hijriDate, setHijriDate] = useState(() => {
@@ -131,6 +132,49 @@ export default function TryIt() {
     return () => ctx.revert();
   }, []);
 
+  // Countdown timer for next prayer
+  useEffect(() => {
+    if (!prayerResult || prayerResult.nextIdx === -1) {
+      return;
+    }
+
+    const updateCountdown = () => {
+      const nextPrayer = prayerResult.prayers[prayerResult.nextIdx];
+      if (!nextPrayer) return;
+
+      const [h, m] = nextPrayer.time.split(":").map(Number);
+      const now = new Date();
+      const prayerTime = new Date();
+      prayerTime.setHours(h, m, 0, 0);
+
+      const diff = prayerTime.getTime() - now.getTime();
+      if (diff <= 0) {
+        setCountdown("");
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (hours > 0) {
+        setCountdown(`${hours}h ${mins}m ${secs}s`);
+      } else if (mins > 0) {
+        setCountdown(`${mins}m ${secs}s`);
+      } else {
+        setCountdown(`${secs}s`);
+      }
+    };
+
+    // Use setTimeout for initial call to avoid synchronous setState
+    const initialTimeout = setTimeout(updateCountdown, 0);
+    const interval = setInterval(updateCountdown, 1000);
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(interval);
+    };
+  }, [prayerResult]);
+
   const switchTab = (name: TabName) => {
     setActiveTab(name);
     setError(null);
@@ -153,10 +197,18 @@ export default function TryIt() {
         { name: "Fajr", time: time.Fajr },
         { name: "Sunrise", time: time.Sunrise },
         { name: "Dhuhr", time: time.Dhuhr },
-        { name: "Asr", time: time.Asr },
+        { name: "Asr (Shafi)", time: time.Asr },
+        { name: "Asr (Hanafi)", time: time.Asr },  // Will be updated below
         { name: "Maghrib", time: time.Maghrib },
         { name: "Isha", time: time.Isha },
       ];
+
+      // Fetch Hanafi Asr time separately (school=1 for Hanafi)
+      const hanafiFetch = await fetch(`https://api.aladhan.com/v1/timingsByCity/${d}?city=${encodeURIComponent(prayerCity)}&country=${encodeURIComponent(prayerCountry)}&method=${prayerMethod}&school=1`);
+      const hanafiData = await hanafiFetch.json();
+      if (hanafiData.code === 200) {
+        prayers[4] = { name: "Asr (Hanafi)", time: hanafiData.data.timings.Asr };
+      }
 
       const now = new Date();
       const nowMins = now.getHours() * 60 + now.getMinutes();
@@ -667,6 +719,18 @@ export default function TryIt() {
                             >
                               {p.time}
                             </div>
+                            {i === prayerResult.nextIdx && countdown && (
+                              <div
+                                style={{
+                                  marginTop: "8px",
+                                  fontSize: "12px",
+                                  color: "var(--teal-light)",
+                                  fontFamily: "monospace",
+                                }}
+                              >
+                                ⏱ {countdown}
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -1124,19 +1188,6 @@ export default function TryIt() {
                   )}
                   {!loading && !error && husnaResult && (
                     <div style={{ textAlign: "center", padding: "16px" }}>
-                      <div
-                        style={{
-                          display: "inline-block",
-                          background: "var(--gold-dim)",
-                          color: "var(--gold)",
-                          fontSize: "11px",
-                          padding: "3px 10px",
-                          borderRadius: "20px",
-                          marginBottom: "16px",
-                        }}
-                      >
-                        {t.tryIt.husna.nameOf.replace("{number}", String(husnaResult.number))}
-                      </div>
                       <div
                         className="font-amiri"
                         dir="rtl"
