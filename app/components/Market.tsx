@@ -3,21 +3,23 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const marketNumbers = [
-  { num: "62M+", label: "Downloads for Muslim Pro — built with zero marketing budget" },
-  { num: "$300M", label: "Valuation of Wahed, a halal investment app" },
-  { num: "2.2B", label: "Projected global Muslim population by 2030" },
-  { num: "Daily", label: "Users open Islamic apps multiple times a day — exceptional retention" },
-];
-
 export default function Market() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const numbersRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+
+  const marketNumbers = [
+    { num: t.market.stats.downloads.num, label: t.market.stats.downloads.label },
+    { num: t.market.stats.valuation.num, label: t.market.stats.valuation.label },
+    { num: t.market.stats.population.num, label: t.market.stats.population.label },
+    { num: t.market.stats.retention.num, label: t.market.stats.retention.label },
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,7 +53,7 @@ export default function Market() {
       // Numbers animation
       const rows = numbersRef.current?.querySelectorAll(".market-row");
       if (rows) {
-        gsap.set(rows, { opacity: 0, x: -30 });
+        gsap.set(rows, { opacity: 0, x: dir === "rtl" ? 30 : -30 });
 
         ScrollTrigger.create({
           trigger: numbersRef.current,
@@ -90,11 +92,12 @@ export default function Market() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [dir]);
 
   return (
     <section
       ref={sectionRef}
+      dir={dir}
       style={{
         padding: "96px 40px",
         maxWidth: "1100px",
@@ -113,7 +116,7 @@ export default function Market() {
             marginBottom: "14px",
           }}
         >
-          Market Opportunity
+          {t.market.eyebrow}
         </p>
         <h2
           className="section-title font-urbanist"
@@ -123,7 +126,7 @@ export default function Market() {
             lineHeight: 1.2,
           }}
         >
-          Why now is the right time
+          {t.market.title}
         </h2>
       </div>
 
@@ -144,9 +147,9 @@ export default function Market() {
             gap: "24px",
           }}
         >
-          {marketNumbers.map((item) => (
+          {marketNumbers.map((item, index) => (
             <div
-              key={item.num}
+              key={index}
               className="market-row"
               style={{
                 display: "flex",
@@ -191,7 +194,7 @@ export default function Market() {
               marginBottom: "16px",
             }}
           >
-            Islamic apps monetize better than they look
+            {t.market.textTitle}
           </h3>
           <p
             style={{
@@ -201,10 +204,7 @@ export default function Market() {
               marginBottom: "14px",
             }}
           >
-            Muslim Pro generates 90% of its revenue from ads and 10% from
-            subscriptions — even though the majority of its users are in
-            developing markets. The gap between downloads and revenue is the
-            opportunity.
+            {t.market.textP1}
           </p>
           <p
             style={{
@@ -214,8 +214,7 @@ export default function Market() {
               marginBottom: "14px",
             }}
           >
-            Users in the Arab Gulf, UK, and North America convert at much higher
-            rates and pay far more per subscription than the global average.
+            {t.market.textP2}
           </p>
           <div
             style={{
@@ -228,10 +227,7 @@ export default function Market() {
               marginTop: "20px",
             }}
           >
-            <strong style={{ color: "var(--gold)" }}>Key insight:</strong> Only
-            8.1% of Quran Majeed&apos;s revenue came from India and Pakistan — despite
-            those countries accounting for 35.6% of downloads. Target the
-            diaspora first.
+            {t.market.highlight}
           </div>
         </div>
       </div>

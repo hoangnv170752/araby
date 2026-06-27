@@ -3,34 +3,36 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const phases = [
-  {
-    phase: "Phase 1",
-    title: "Core Religious Tools",
-    desc: "Launch with the four API-powered features: prayer times, Hijri calendar, Quran reader, Asma Al Husna. Nail the UX and localization for Arabic, English, and one regional language.",
-    tags: ["Prayer Times API", "Hijri Calendar", "Quran API", "Al Husna API"],
-  },
-  {
-    phase: "Phase 2",
-    title: "Engagement & Retention",
-    desc: "Add daily Ayah notifications, Tasbih counter, Dua library, and mosque locator. Introduce freemium tier. Run first Ramadan campaign.",
-    tags: ["Notifications", "Offline mode", "Freemium"],
-  },
-  {
-    phase: "Phase 3",
-    title: "Community & Monetization",
-    desc: "Open community features: Islamic Q&A, local events, halal directory. Launch B2B white-label offering for mosques and Islamic schools. Explore charity donation integration.",
-    tags: ["Community", "B2B API", "Donations", "Marketplace"],
-  },
-];
-
 export default function Roadmap() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const phases = [
+    {
+      phase: t.roadmap.phase1.phase,
+      title: t.roadmap.phase1.title,
+      desc: t.roadmap.phase1.desc,
+      tags: t.roadmap.phase1.tags,
+    },
+    {
+      phase: t.roadmap.phase2.phase,
+      title: t.roadmap.phase2.title,
+      desc: t.roadmap.phase2.desc,
+      tags: t.roadmap.phase2.tags,
+    },
+    {
+      phase: t.roadmap.phase3.phase,
+      title: t.roadmap.phase3.title,
+      desc: t.roadmap.phase3.desc,
+      tags: t.roadmap.phase3.tags,
+    },
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -116,6 +118,7 @@ export default function Roadmap() {
     <section
       ref={sectionRef}
       id="roadmap"
+      dir={dir}
       style={{
         padding: "96px 40px",
         background: "var(--deep)",
@@ -135,7 +138,7 @@ export default function Roadmap() {
               marginBottom: "14px",
             }}
           >
-            Build Plan
+            {t.roadmap.eyebrow}
           </p>
           <h2
             className="section-title font-urbanist"
@@ -147,7 +150,7 @@ export default function Roadmap() {
               maxWidth: "400px",
             }}
           >
-            From MVP to ecosystem
+            {t.roadmap.title}
           </h2>
         </div>
 
@@ -160,7 +163,7 @@ export default function Roadmap() {
         >
           {phases.map((item, index) => (
             <div
-              key={item.phase}
+              key={index}
               ref={(el) => {
                 itemsRef.current[index] = el;
               }}
@@ -217,9 +220,9 @@ export default function Roadmap() {
                     marginTop: "12px",
                   }}
                 >
-                  {item.tags.map((tag) => (
+                  {item.tags.map((tag, tagIndex) => (
                     <span
-                      key={tag}
+                      key={tagIndex}
                       className="tag"
                       style={{
                         background: "var(--gold-dim)",

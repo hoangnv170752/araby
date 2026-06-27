@@ -3,18 +3,20 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const stats = [
-  { num: "1.9B", label: "Muslim users worldwide" },
-  { num: "$2T", label: "Global halal economy" },
-  { num: "$7.3B", label: "Spiritual wellness apps market by 2033" },
-];
-
 export default function Stats() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const stats = [
+    { num: t.stats.muslimUsers.num, label: t.stats.muslimUsers.label },
+    { num: t.stats.halalEconomy.num, label: t.stats.halalEconomy.label },
+    { num: t.stats.wellnessMarket.num, label: t.stats.wellnessMarket.label },
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,6 +57,7 @@ export default function Stats() {
   return (
     <div
       ref={sectionRef}
+      dir={dir}
       style={{
         borderTop: "1px solid var(--border)",
         borderBottom: "1px solid var(--border)",
@@ -66,7 +69,7 @@ export default function Stats() {
     >
       {stats.map((stat, index) => (
         <div
-          key={stat.num}
+          key={index}
           ref={(el) => {
             itemsRef.current[index] = el;
           }}

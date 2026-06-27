@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Amiri } from "next/font/google";
 import "./globals.css";
+import ClientProviders from "./components/ClientProviders";
 
 const urbanist = localFont({
   src: [
@@ -66,7 +67,9 @@ export default function RootLayout({
       lang="en"
       className={`${urbanist.variable} ${cairo.variable} ${amiri.variable} antialiased`}
     >
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   );
 }

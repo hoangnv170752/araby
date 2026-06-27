@@ -2,12 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useTranslation } from "../i18n";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Nav() {
+  const { t, dir } = useTranslation();
   const navRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -50,9 +53,16 @@ export default function Nav() {
     return () => ctx.revert();
   }, []);
 
+  const navLinks = [
+    { key: "features", label: t.nav.features, href: "#features" },
+    { key: "market", label: t.nav.market, href: "#market" },
+    { key: "roadmap", label: t.nav.roadmap, href: "#roadmap" },
+  ];
+
   return (
     <nav
       ref={navRef}
+      dir={dir}
       style={{
         position: "fixed",
         top: 0,
@@ -89,10 +99,10 @@ export default function Nav() {
         }}
         className="hidden md:flex"
       >
-        {["Features", "Market", "Roadmap"].map((link) => (
-          <li key={link}>
+        {navLinks.map((link) => (
+          <li key={link.key}>
             <a
-              href={`#${link.toLowerCase()}`}
+              href={link.href}
               style={{
                 color: "var(--muted)",
                 textDecoration: "none",
@@ -103,30 +113,39 @@ export default function Nav() {
               onMouseEnter={(e) => (e.currentTarget.style.color = "var(--white)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
             >
-              {link}
+              {link.label}
             </a>
           </li>
         ))}
       </ul>
 
-      <a
+      <div
         ref={ctaRef}
-        href="#waitlist"
         style={{
-          background: "var(--gold)",
-          color: "var(--night)",
-          padding: "9px 22px",
-          borderRadius: "6px",
-          fontSize: "14px",
-          fontWeight: 600,
-          textDecoration: "none",
-          transition: "background 0.2s",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--gold-light)")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "var(--gold)")}
       >
-        Join Waitlist
-      </a>
+        <LanguageSwitcher />
+        <a
+          href="#waitlist"
+          style={{
+            background: "var(--gold)",
+            color: "var(--night)",
+            padding: "9px 22px",
+            borderRadius: "6px",
+            fontSize: "14px",
+            fontWeight: 600,
+            textDecoration: "none",
+            transition: "background 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--gold-light)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "var(--gold)")}
+        >
+          {t.nav.joinWaitlist}
+        </a>
+      </div>
     </nav>
   );
 }

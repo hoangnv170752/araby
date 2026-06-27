@@ -3,10 +3,12 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Footer() {
+  const { t, dir } = useTranslation();
   const footerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
+      dir={dir}
       style={{
         padding: "28px 40px",
         borderTop: "1px solid var(--border)",
@@ -57,7 +60,7 @@ export default function Footer() {
           fontSize: "13px",
         }}
       >
-        Built with AlAdhan & AlQuran Cloud APIs · 2026
+        {t.footer.builtWith}
       </div>
     </footer>
   );

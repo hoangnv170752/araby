@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { COUNTRIES } from "../data/cities";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +29,7 @@ interface AyahData {
 }
 
 export default function TryIt() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -36,8 +39,10 @@ export default function TryIt() {
   const [error, setError] = useState<string | null>(null);
 
   // Prayer state
+  const [prayerCountryCode, setPrayerCountryCode] = useState("AE");
   const [prayerCity, setPrayerCity] = useState("Dubai");
-  const [prayerCountry, setPrayerCountry] = useState("UAE");
+  const prayerCountryEntry = COUNTRIES.find((c) => c.code === prayerCountryCode) ?? COUNTRIES[0];
+  const prayerCountry = prayerCountryEntry.nameEn;
   const [prayerMethod, setPrayerMethod] = useState("4");
   const [prayerResult, setPrayerResult] = useState<{
     prayers: PrayerTime[];
@@ -45,8 +50,13 @@ export default function TryIt() {
     nextIdx: number;
   } | null>(null);
 
-  // Hijri state
-  const [hijriDate, setHijriDate] = useState("");
+  // Hijri state - initialize with current date on client
+  const [hijriDate, setHijriDate] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new Date().toISOString().split("T")[0];
+    }
+    return "";
+  });
   const [hijriResult, setHijriResult] = useState<{
     gregorian: { day: string; month: string; year: string; weekday: string };
     hijri: {
@@ -69,10 +79,6 @@ export default function TryIt() {
     arabic: AyahData;
     translation: AyahData & { edition: { englishName: string } };
   } | null>(null);
-
-  useEffect(() => {
-    setHijriDate(new Date().toISOString().split("T")[0]);
-  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -141,15 +147,15 @@ export default function TryIt() {
       const data = await res.json();
       if (data.code !== 200) throw new Error(data.status);
 
-      const t = data.data.timings;
+      const time = data.data.timings;
       const date = data.data.date;
       const prayers = [
-        { name: "Fajr", time: t.Fajr },
-        { name: "Sunrise", time: t.Sunrise },
-        { name: "Dhuhr", time: t.Dhuhr },
-        { name: "Asr", time: t.Asr },
-        { name: "Maghrib", time: t.Maghrib },
-        { name: "Isha", time: t.Isha },
+        { name: "Fajr", time: time.Fajr },
+        { name: "Sunrise", time: time.Sunrise },
+        { name: "Dhuhr", time: time.Dhuhr },
+        { name: "Asr", time: time.Asr },
+        { name: "Maghrib", time: time.Maghrib },
+        { name: "Isha", time: time.Isha },
       ];
 
       const now = new Date();
@@ -256,10 +262,10 @@ export default function TryIt() {
   };
 
   const tabs: { name: TabName; icon: string; label: string }[] = [
-    { name: "prayer", icon: "🕌", label: "Prayer Times" },
-    { name: "hijri", icon: "🌙", label: "Hijri Calendar" },
-    { name: "husna", icon: "✨", label: "Asma Al Husna" },
-    { name: "ayah", icon: "📖", label: "Random Ayah" },
+    { name: "prayer", icon: "🕌", label: t.tryIt.tabs.prayer },
+    { name: "hijri", icon: "🌙", label: t.tryIt.tabs.hijri },
+    { name: "husna", icon: "✨", label: t.tryIt.tabs.husna },
+    { name: "ayah", icon: "📖", label: t.tryIt.tabs.ayah },
   ];
 
   const inputStyle: React.CSSProperties = {
@@ -299,6 +305,7 @@ export default function TryIt() {
     <section
       ref={sectionRef}
       id="tryout"
+      dir={dir}
       style={{
         padding: "96px 40px",
         background: "var(--deep)",
@@ -319,7 +326,7 @@ export default function TryIt() {
               marginBottom: "14px",
             }}
           >
-            Live Demo
+            {t.tryIt.eyebrow}
           </p>
           <h2
             className="section-title font-urbanist"
@@ -331,7 +338,7 @@ export default function TryIt() {
               maxWidth: "520px",
             }}
           >
-            Try it right now
+            {t.tryIt.title}
           </h2>
           <p
             className="section-desc"
@@ -341,7 +348,7 @@ export default function TryIt() {
               marginBottom: "48px",
             }}
           >
-            Real data, real APIs — no signup needed.
+            {t.tryIt.description}
           </p>
         </div>
 
@@ -410,7 +417,7 @@ export default function TryIt() {
                       className="font-urbanist"
                       style={{ fontSize: "20px", color: "var(--white)" }}
                     >
-                      Prayer Times
+                      {t.tryIt.prayer.title}
                     </div>
                     <div
                       style={{
@@ -419,7 +426,7 @@ export default function TryIt() {
                         marginTop: "4px",
                       }}
                     >
-                      Get accurate Salah schedule for any city worldwide.
+                      {t.tryIt.prayer.desc}
                     </div>
                   </div>
                   <div
@@ -461,20 +468,65 @@ export default function TryIt() {
                         textTransform: "uppercase",
                       }}
                     >
-                      City
+                      {t.tryIt.prayer.country}
                     </label>
-                    <input
+                    <select
+                      value={prayerCountryCode}
+                      onChange={(e) => {
+                        const code = e.target.value;
+                        setPrayerCountryCode(code);
+                        const entry = COUNTRIES.find((c) => c.code === code);
+                        if (entry) setPrayerCity(entry.cities[0]);
+                      }}
+                      style={{ ...inputStyle, minWidth: "180px" }}
+                      onFocus={(e) =>
+                        (e.currentTarget.style.borderColor = "var(--gold)")
+                      }
+                      onBlur={(e) =>
+                        (e.currentTarget.style.borderColor = "var(--border)")
+                      }
+                    >
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.nameEn}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "5px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        fontSize: "11px",
+                        color: "var(--muted)",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {t.tryIt.prayer.city}
+                    </label>
+                    <select
                       value={prayerCity}
                       onChange={(e) => setPrayerCity(e.target.value)}
-                      style={inputStyle}
-                      placeholder="e.g. Cairo"
+                      style={{ ...inputStyle, minWidth: "160px" }}
                       onFocus={(e) =>
                         (e.currentTarget.style.borderColor = "var(--gold)")
                       }
                       onBlur={(e) =>
                         (e.currentTarget.style.borderColor = "var(--border)")
                       }
-                    />
+                    >
+                      {prayerCountryEntry.cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div
                     style={{
@@ -491,37 +543,7 @@ export default function TryIt() {
                         textTransform: "uppercase",
                       }}
                     >
-                      Country
-                    </label>
-                    <input
-                      value={prayerCountry}
-                      onChange={(e) => setPrayerCountry(e.target.value)}
-                      style={{ ...inputStyle, minWidth: "100px" }}
-                      placeholder="e.g. Egypt"
-                      onFocus={(e) =>
-                        (e.currentTarget.style.borderColor = "var(--gold)")
-                      }
-                      onBlur={(e) =>
-                        (e.currentTarget.style.borderColor = "var(--border)")
-                      }
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
-                    <label
-                      style={{
-                        fontSize: "11px",
-                        color: "var(--muted)",
-                        letterSpacing: "1px",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      Method
+                      {t.tryIt.prayer.method}
                     </label>
                     <select
                       value={prayerMethod}
@@ -559,7 +581,7 @@ export default function TryIt() {
                       e.currentTarget.style.background = "var(--gold)";
                     }}
                   >
-                    Fetch Times
+                    {t.tryIt.prayer.fetchTimes}
                   </button>
                 </div>
 
@@ -574,7 +596,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Fetching live data…
+                      {t.tryIt.prayer.loading}
                     </div>
                   )}
                   {error && (
@@ -598,7 +620,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Enter a city and click Fetch Times ↑
+                      {t.tryIt.prayer.emptyState}
                     </div>
                   )}
                   {!loading && !error && prayerResult && (
@@ -637,7 +659,7 @@ export default function TryIt() {
                               }}
                             >
                               {p.name}
-                              {i === prayerResult.nextIdx && " · Next"}
+                              {i === prayerResult.nextIdx && ` · ${t.tryIt.prayer.next}`}
                             </div>
                             <div
                               className="font-urbanist"
@@ -689,7 +711,7 @@ export default function TryIt() {
                       className="font-urbanist"
                       style={{ fontSize: "20px", color: "var(--white)" }}
                     >
-                      Hijri Calendar
+                      {t.tryIt.hijri.title}
                     </div>
                     <div
                       style={{
@@ -698,7 +720,7 @@ export default function TryIt() {
                         marginTop: "4px",
                       }}
                     >
-                      Convert any Gregorian date to the Islamic Hijri calendar.
+                      {t.tryIt.hijri.desc}
                     </div>
                   </div>
                   <div
@@ -740,7 +762,7 @@ export default function TryIt() {
                         textTransform: "uppercase",
                       }}
                     >
-                      Date
+                      {t.tryIt.hijri.date}
                     </label>
                     <input
                       type="date"
@@ -771,7 +793,7 @@ export default function TryIt() {
                       e.currentTarget.style.background = "var(--gold)";
                     }}
                   >
-                    Convert Date
+                    {t.tryIt.hijri.convert}
                   </button>
                 </div>
 
@@ -786,7 +808,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Fetching live data…
+                      {t.tryIt.prayer.loading}
                     </div>
                   )}
                   {error && (
@@ -810,7 +832,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Pick a date and click Convert ↑
+                      {t.tryIt.hijri.emptyState}
                     </div>
                   )}
                   {!loading && !error && hijriResult && (
@@ -839,7 +861,7 @@ export default function TryIt() {
                               marginBottom: "8px",
                             }}
                           >
-                            Gregorian
+                            {t.tryIt.hijri.gregorian}
                           </div>
                           <div
                             className="font-urbanist"
@@ -881,7 +903,7 @@ export default function TryIt() {
                               marginBottom: "8px",
                             }}
                           >
-                            Hijri · Islamic
+                            {t.tryIt.hijri.hijriLabel}
                           </div>
                           <div
                             className="font-urbanist"
@@ -924,7 +946,7 @@ export default function TryIt() {
                           color: "var(--muted)",
                         }}
                       >
-                        Designation: {hijriResult.hijri.designation}
+                        {t.tryIt.hijri.designation}: {hijriResult.hijri.designation}
                       </div>
                     </>
                   )}
@@ -950,7 +972,7 @@ export default function TryIt() {
                       className="font-urbanist"
                       style={{ fontSize: "20px", color: "var(--white)" }}
                     >
-                      Asma Al Husna
+                      {t.tryIt.husna.title}
                     </div>
                     <div
                       style={{
@@ -959,7 +981,7 @@ export default function TryIt() {
                         marginTop: "4px",
                       }}
                     >
-                      Explore each of the 99 beautiful names of Allah.
+                      {t.tryIt.husna.desc}
                     </div>
                   </div>
                   <div
@@ -1001,7 +1023,7 @@ export default function TryIt() {
                         textTransform: "uppercase",
                       }}
                     >
-                      Name number (1–99)
+                      {t.tryIt.husna.nameNumber}
                     </label>
                     <input
                       type="number"
@@ -1036,7 +1058,7 @@ export default function TryIt() {
                       e.currentTarget.style.background = "var(--gold)";
                     }}
                   >
-                    Show Name
+                    {t.tryIt.husna.showName}
                   </button>
                   <button
                     onClick={() => {
@@ -1058,7 +1080,7 @@ export default function TryIt() {
                       e.currentTarget.style.background = "var(--teal)";
                     }}
                   >
-                    Random ↻
+                    {t.tryIt.husna.random}
                   </button>
                 </div>
 
@@ -1073,7 +1095,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Fetching live data…
+                      {t.tryIt.prayer.loading}
                     </div>
                   )}
                   {error && (
@@ -1097,7 +1119,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Choose a number and click Show Name ↑
+                      {t.tryIt.husna.emptyState}
                     </div>
                   )}
                   {!loading && !error && husnaResult && (
@@ -1113,7 +1135,7 @@ export default function TryIt() {
                           marginBottom: "16px",
                         }}
                       >
-                        Name {husnaResult.number} of 99
+                        {t.tryIt.husna.nameOf.replace("{number}", String(husnaResult.number))}
                       </div>
                       <div
                         className="font-amiri"
@@ -1164,7 +1186,7 @@ export default function TryIt() {
                       className="font-urbanist"
                       style={{ fontSize: "20px", color: "var(--white)" }}
                     >
-                      Random Ayah
+                      {t.tryIt.ayah.title}
                     </div>
                     <div
                       style={{
@@ -1173,8 +1195,7 @@ export default function TryIt() {
                         marginTop: "4px",
                       }}
                     >
-                      A verse from the Quran, drawn randomly — with Arabic text
-                      and English translation.
+                      {t.tryIt.ayah.desc}
                     </div>
                   </div>
                   <div
@@ -1216,7 +1237,7 @@ export default function TryIt() {
                         textTransform: "uppercase",
                       }}
                     >
-                      Translation
+                      {t.tryIt.ayah.translation}
                     </label>
                     <select
                       value={ayahEdition}
@@ -1253,7 +1274,7 @@ export default function TryIt() {
                       e.currentTarget.style.background = "var(--gold)";
                     }}
                   >
-                    Draw Ayah ↻
+                    {t.tryIt.ayah.drawAyah}
                   </button>
                 </div>
 
@@ -1268,7 +1289,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Fetching live data…
+                      {t.tryIt.prayer.loading}
                     </div>
                   )}
                   {error && (
@@ -1292,7 +1313,7 @@ export default function TryIt() {
                         padding: "16px 0",
                       }}
                     >
-                      Click &quot;Draw Ayah&quot; to receive a verse ↑
+                      {t.tryIt.ayah.emptyState}
                     </div>
                   )}
                   {!loading && !error && ayahResult && (
@@ -1326,8 +1347,8 @@ export default function TryIt() {
                       <div
                         style={{ fontSize: "12px", color: "var(--muted)" }}
                       >
-                        Surah {ayahResult.arabic.surah.englishName} (
-                        {ayahResult.arabic.surah.name}) · Verse{" "}
+                        {t.tryIt.ayah.surah} {ayahResult.arabic.surah.englishName} (
+                        {ayahResult.arabic.surah.name}) · {t.tryIt.ayah.verse}{" "}
                         {ayahResult.arabic.numberInSurah} ·{" "}
                         {ayahResult.translation.edition.englishName}
                       </div>

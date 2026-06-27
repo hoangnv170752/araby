@@ -3,38 +3,40 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const streams = [
-  {
-    label: "Stream 01",
-    title: "Freemium Subscriptions",
-    desc: "Core features free forever. Premium tier unlocks ad-free experience, offline Quran audio, advanced prayer analytics, and widgets.",
-    potential: "Est. $2–5/month per user · High retention",
-    featured: false,
-  },
-  {
-    label: "Stream 02",
-    title: "Ramadan Surge Revenue",
-    desc: "Islamic app sessions spike 15% during Ramadan. Time-limited premium bundles, donation features, and sponsored charitable campaigns drive massive seasonal revenue.",
-    potential: "$1.7B total app revenue in Ramadan 2025",
-    featured: true,
-    badge: "Best fit",
-  },
-  {
-    label: "Stream 03",
-    title: "B2B API & White Label",
-    desc: "License the platform to mosques, Islamic schools, and halal businesses. White-label versions for regional markets in MENA and Southeast Asia.",
-    potential: "Higher margins · Recurring B2B contracts",
-    featured: false,
-  },
-];
-
 export default function Monetization() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const streams = [
+    {
+      label: t.monetization.stream1.label,
+      title: t.monetization.stream1.title,
+      desc: t.monetization.stream1.desc,
+      potential: t.monetization.stream1.potential,
+      featured: false,
+    },
+    {
+      label: t.monetization.stream2.label,
+      title: t.monetization.stream2.title,
+      desc: t.monetization.stream2.desc,
+      potential: t.monetization.stream2.potential,
+      featured: true,
+      badge: t.monetization.stream2.badge,
+    },
+    {
+      label: t.monetization.stream3.label,
+      title: t.monetization.stream3.title,
+      desc: t.monetization.stream3.desc,
+      potential: t.monetization.stream3.potential,
+      featured: false,
+    },
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -94,6 +96,7 @@ export default function Monetization() {
     <section
       ref={sectionRef}
       id="market"
+      dir={dir}
       style={{
         background: "var(--deep)",
         padding: "96px 40px",
@@ -114,7 +117,7 @@ export default function Monetization() {
               marginBottom: "14px",
             }}
           >
-            How It Makes Money
+            {t.monetization.eyebrow}
           </p>
           <h2
             className="section-title font-urbanist"
@@ -126,7 +129,7 @@ export default function Monetization() {
               maxWidth: "480px",
             }}
           >
-            Three revenue streams, built for this community
+            {t.monetization.title}
           </h2>
         </div>
 
@@ -139,7 +142,7 @@ export default function Monetization() {
         >
           {streams.map((stream, index) => (
             <div
-              key={stream.title}
+              key={index}
               ref={(el) => {
                 cardsRef.current[index] = el;
               }}
@@ -184,7 +187,8 @@ export default function Monetization() {
                   style={{
                     position: "absolute",
                     top: "16px",
-                    right: "16px",
+                    right: dir === "rtl" ? "auto" : "16px",
+                    left: dir === "rtl" ? "16px" : "auto",
                     background: "var(--gold)",
                     color: "var(--night)",
                     fontSize: "10px",

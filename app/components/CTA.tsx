@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CTA() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
@@ -84,6 +86,7 @@ export default function CTA() {
     <section
       ref={sectionRef}
       id="waitlist"
+      dir={dir}
       style={{
         padding: "96px 40px",
         textAlign: "center",
@@ -114,7 +117,7 @@ export default function CTA() {
             marginBottom: "24px",
           }}
         >
-          السلام عليكم
+          {t.cta.arabic}
         </p>
         <h2
           className="cta-title font-urbanist"
@@ -125,9 +128,7 @@ export default function CTA() {
             lineHeight: 1.15,
           }}
         >
-          Be first to know
-          <br />
-          when we launch.
+          {t.cta.title}
         </h2>
         <p
           className="cta-sub"
@@ -138,8 +139,7 @@ export default function CTA() {
             margin: "0 auto 40px",
           }}
         >
-          Join the waitlist. We&apos;ll reach out before public launch with early
-          access.
+          {t.cta.subtitle}
         </p>
 
         {!submitted ? (
@@ -159,7 +159,7 @@ export default function CTA() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t.cta.emailPlaceholder}
               style={{
                 flex: 1,
                 minWidth: "220px",
@@ -171,6 +171,7 @@ export default function CTA() {
                 fontSize: "14px",
                 outline: "none",
                 transition: "border-color 0.2s",
+                textAlign: dir === "rtl" ? "right" : "left",
               }}
               onFocus={(e) => {
                 e.currentTarget.style.borderColor = "var(--gold)";
@@ -201,7 +202,7 @@ export default function CTA() {
                 e.currentTarget.style.background = "var(--gold)";
               }}
             >
-              Join Waitlist
+              {t.cta.button}
             </button>
           </form>
         ) : (
@@ -217,7 +218,7 @@ export default function CTA() {
             }}
           >
             <p style={{ color: "var(--gold)", fontWeight: 500 }}>
-              ✓ You&apos;re on the list! We&apos;ll be in touch.
+              {t.cta.success}
             </p>
           </div>
         )}

@@ -3,40 +3,42 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslation } from "../i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const features = [
-  {
-    icon: "🕌",
-    title: "Prayer Times",
-    desc: "Accurate prayer schedules for any city in the world, updated in real-time. Countdown to the next Salah, customizable notification alerts.",
-    api: "↳ Araby API · /prayer-times",
-  },
-  {
-    icon: "🌙",
-    title: "Hijri Calendar",
-    desc: "Convert between Gregorian and Islamic dates. Track Ramadan, Eid, and all major Islamic holidays automatically.",
-    api: "↳ Araby API · /hijri-calendar",
-  },
-  {
-    icon: "📖",
-    title: "Quran Reader",
-    desc: "Full text of the Holy Quran with multiple editions, translations, search, and a random Ayah feature for daily reflection.",
-    api: "↳ Araby API · /quran",
-  },
-  {
-    icon: "✨",
-    title: "Asma Al Husna",
-    desc: "Explore all 99 Beautiful Names of Allah — in Arabic script, transliteration, and meaning. One name highlighted each day.",
-    api: "↳ Araby API · /asma-al-husna",
-  },
-];
-
 export default function Features() {
+  const { t, dir } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const features = [
+    {
+      icon: "🕌",
+      title: t.features.prayerTimes.title,
+      desc: t.features.prayerTimes.desc,
+      api: t.features.prayerTimes.api,
+    },
+    {
+      icon: "🌙",
+      title: t.features.hijriCalendar.title,
+      desc: t.features.hijriCalendar.desc,
+      api: t.features.hijriCalendar.api,
+    },
+    {
+      icon: "📖",
+      title: t.features.quranReader.title,
+      desc: t.features.quranReader.desc,
+      api: t.features.quranReader.api,
+    },
+    {
+      icon: "✨",
+      title: t.features.asmaAlHusna.title,
+      desc: t.features.asmaAlHusna.desc,
+      api: t.features.asmaAlHusna.api,
+    },
+  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -85,6 +87,7 @@ export default function Features() {
     <section
       ref={sectionRef}
       id="features"
+      dir={dir}
       style={{
         padding: "96px 40px",
         maxWidth: "1100px",
@@ -103,7 +106,7 @@ export default function Features() {
             marginBottom: "14px",
           }}
         >
-          What&apos;s Inside
+          {t.features.eyebrow}
         </p>
         <h2
           className="section-title font-urbanist"
@@ -115,7 +118,7 @@ export default function Features() {
             maxWidth: "520px",
           }}
         >
-          Four pillars. One app.
+          {t.features.title}
         </h2>
       </div>
 
@@ -132,7 +135,7 @@ export default function Features() {
       >
         {features.map((feature, index) => (
           <div
-            key={feature.title}
+            key={index}
             ref={(el) => {
               cardsRef.current[index] = el;
             }}

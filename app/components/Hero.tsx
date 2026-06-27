@@ -2,8 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useTranslation } from "../i18n";
 
 export default function Hero() {
+  const { t, dir } = useTranslation();
   const heroRef = useRef<HTMLElement>(null);
   const ornamentRef = useRef<HTMLDivElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
@@ -86,6 +88,7 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
+      dir={dir}
       style={{
         minHeight: "100vh",
         display: "flex",
@@ -152,7 +155,7 @@ export default function Hero() {
           marginBottom: "20px",
         }}
       >
-        Islamic Digital Platform
+        {t.hero.eyebrow}
       </p>
 
       <h1
@@ -166,10 +169,10 @@ export default function Hero() {
           marginBottom: "12px",
         }}
       >
-        Faith.
+        {t.hero.titleLine1}
         <br />
         <em className="gradient-text" style={{ fontStyle: "italic" }}>
-          Connected.
+          {t.hero.titleLine3}
         </em>
       </h1>
 
@@ -184,7 +187,7 @@ export default function Hero() {
           direction: "rtl",
         }}
       >
-        بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ
+        {t.hero.arabicText}
       </p>
 
       <p
@@ -197,9 +200,7 @@ export default function Hero() {
           marginBottom: "44px",
         }}
       >
-        Know your next Salah before it arrives. Read the Quran in 40+ editions.
-        Live by the Hijri calendar. Discover a new name of Allah every day.
-        Everything your faith needs, in one place.
+        {t.hero.description}
       </p>
 
       <div
@@ -233,7 +234,7 @@ export default function Hero() {
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          Join the Waitlist
+          {t.hero.cta}
         </a>
         <a
           href="#features"
@@ -257,7 +258,7 @@ export default function Hero() {
             e.currentTarget.style.color = "var(--text)";
           }}
         >
-          See Features
+          {t.nav.features}
         </a>
       </div>
     </section>
