@@ -80,6 +80,8 @@ export default function TryIt() {
       const title = headerRef.current?.querySelector(".section-title");
       const desc = headerRef.current?.querySelector(".section-desc");
 
+      if (!eyebrow || !title || !desc || !contentRef.current) return;
+
       gsap.set([eyebrow, title, desc, contentRef.current], {
         opacity: 0,
         y: 30,

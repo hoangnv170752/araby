@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# أرابي · Araby
+
+**Your Islamic Companion** — prayer times, Hijri calendar, Quran reader, and the 99 Names of Allah. Everything your faith needs, in one place.
+
+---
+
+## Features
+
+- **Prayer Times** — Accurate Salah schedules for any city worldwide via `Araby API /prayer-times`
+- **Hijri Calendar** — Gregorian ↔ Islamic date conversion via `Araby API /hijri-calendar`
+- **Quran Reader** — Full Quran text with 40+ editions and translations via `Araby API /quran`
+- **Asma Al Husna** — All 99 Beautiful Names of Allah in Arabic, transliteration & meaning via `Araby API /asma-al-husna`
+
+## Tech Stack
+
+- **Framework** — Next.js 16 (App Router, Turbopack)
+- **Styling** — Tailwind CSS v4
+- **Animations** — GSAP + ScrollTrigger
+- **Fonts** — Urbanist (Latin UI), Cairo (Arabic UI), Amiri (Arabic scripture)
+- **Backend** — Supabase
+- **Deployment** — Vercel
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+├── components/
+│   ├── Nav.tsx          # Fixed navigation bar
+│   ├── Hero.tsx         # Hero section with Bismillah
+│   ├── Stats.tsx        # Market statistics
+│   ├── TryIt.tsx        # Live API demo (Prayer, Hijri, Husna, Ayah)
+│   ├── Features.tsx     # Four pillars feature grid
+│   ├── Monetization.tsx # Revenue stream cards
+│   ├── Market.tsx       # Market opportunity section
+│   ├── Roadmap.tsx      # Phase-based build plan
+│   ├── CTA.tsx          # Waitlist signup
+│   └── Footer.tsx       # Site footer
+├── globals.css          # Tailwind v4 theme + font config
+├── layout.tsx           # Root layout with local fonts
+└── page.tsx             # Page composition
+font/
+├── Urbanist/            # Urbanist variable font (local)
+└── Cairo/               # Cairo variable font (local)
+docs/
+├── arabic-countries.json  # Country codes with Arabic & English names
+└── al-quran.yaml          # Quran reference data
+```
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev      # Start development server
+npm run build    # Production build
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy instantly to Vercel — `vercel.json` is included. Push to GitHub and import the repository at [vercel.com/new](https://vercel.com/new).

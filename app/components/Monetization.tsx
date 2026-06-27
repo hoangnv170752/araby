@@ -41,6 +41,8 @@ export default function Monetization() {
       const eyebrow = headerRef.current?.querySelector(".section-eyebrow");
       const title = headerRef.current?.querySelector(".section-title");
 
+      if (!eyebrow || !title) return;
+
       gsap.set([eyebrow, title], { opacity: 0, y: 30 });
 
       ScrollTrigger.create({

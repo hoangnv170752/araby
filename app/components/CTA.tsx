@@ -19,6 +19,8 @@ export default function CTA() {
       const sub = contentRef.current?.querySelector(".cta-sub");
       const form = contentRef.current?.querySelector(".email-form");
 
+      if (!arabic || !title || !sub || !form) return;
+
       gsap.set([arabic, title, sub, form], { opacity: 0, y: 40 });
 
       ScrollTrigger.create({
