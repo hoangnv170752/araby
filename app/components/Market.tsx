@@ -98,8 +98,8 @@ export default function Market() {
     <section
       ref={sectionRef}
       dir={dir}
+      className="section-pad"
       style={{
-        padding: "96px 40px",
         maxWidth: "1100px",
         margin: "0 auto",
       }}
@@ -130,15 +130,7 @@ export default function Market() {
         </h2>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "48px",
-          alignItems: "center",
-          marginTop: "56px",
-        }}
-      >
+      <div className="grid-2-col" style={{ marginTop: "56px" }}>
         <div
           ref={numbersRef}
           style={{

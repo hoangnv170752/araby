@@ -69,7 +69,7 @@ export default function Nav() {
         left: 0,
         right: 0,
         zIndex: 100,
-        padding: "18px 40px",
+        padding: "14px 20px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -82,9 +82,10 @@ export default function Nav() {
         ref={logoRef}
         className="font-amiri"
         style={{
-          fontSize: "22px",
+          fontSize: "clamp(16px, 4vw, 22px)",
           color: "var(--gold)",
           letterSpacing: "1px",
+          whiteSpace: "nowrap",
         }}
       >
         أرابي <span style={{ color: "var(--white)" }}>· Araby</span>
@@ -130,15 +131,17 @@ export default function Nav() {
         <LanguageSwitcher />
         <a
           href="#waitlist"
+          className="hidden sm:inline-block"
           style={{
             background: "var(--gold)",
             color: "var(--night)",
-            padding: "9px 22px",
+            padding: "8px 16px",
             borderRadius: "6px",
-            fontSize: "14px",
+            fontSize: "13px",
             fontWeight: 600,
             textDecoration: "none",
             transition: "background 0.2s",
+            whiteSpace: "nowrap",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--gold-light)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "var(--gold)")}

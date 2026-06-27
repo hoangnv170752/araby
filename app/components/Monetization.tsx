@@ -99,12 +99,11 @@ export default function Monetization() {
       dir={dir}
       style={{
         background: "var(--deep)",
-        padding: "96px 40px",
         borderTop: "1px solid var(--border)",
         borderBottom: "1px solid var(--border)",
       }}
     >
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <div className="section-pad" style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <div ref={headerRef}>
           <p
             className="section-eyebrow"
@@ -133,13 +132,7 @@ export default function Monetization() {
           </h2>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "20px",
-          }}
-        >
+        <div className="grid-3-col">
           {streams.map((stream, index) => (
             <div
               key={index}

@@ -96,7 +96,7 @@ export default function Hero() {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        padding: "120px 24px 80px",
+        padding: "clamp(80px, 15vw, 120px) 20px clamp(60px, 10vw, 80px)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -180,7 +180,7 @@ export default function Hero() {
         ref={arabicRef}
         className="font-amiri"
         style={{
-          fontSize: "28px",
+          fontSize: "clamp(20px, 5vw, 28px)",
           color: "var(--gold-light)",
           marginBottom: "24px",
           opacity: 0.7,

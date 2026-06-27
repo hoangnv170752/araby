@@ -119,8 +119,8 @@ export default function Roadmap() {
       ref={sectionRef}
       id="roadmap"
       dir={dir}
+      className="section-pad"
       style={{
-        padding: "96px 40px",
         background: "var(--deep)",
         borderTop: "1px solid var(--border)",
       }}

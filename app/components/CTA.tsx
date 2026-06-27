@@ -111,8 +111,8 @@ export default function CTA() {
       ref={sectionRef}
       id="waitlist"
       dir={dir}
+      className="section-pad"
       style={{
-        padding: "96px 40px",
         textAlign: "center",
         position: "relative",
         overflow: "hidden",

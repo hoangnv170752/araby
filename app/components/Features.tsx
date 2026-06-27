@@ -88,8 +88,8 @@ export default function Features() {
       ref={sectionRef}
       id="features"
       dir={dir}
+      className="section-pad"
       style={{
-        padding: "96px 40px",
         maxWidth: "1100px",
         margin: "0 auto",
       }}
@@ -122,17 +122,7 @@ export default function Features() {
         </h2>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "2px",
-          background: "var(--border)",
-          border: "1px solid var(--border)",
-          borderRadius: "16px",
-          overflow: "hidden",
-        }}
-      >
+      <div className="grid-features">
         {features.map((feature, index) => (
           <div
             key={index}
