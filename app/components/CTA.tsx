@@ -8,11 +8,14 @@ import { useTranslation } from "../i18n";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CTA() {
-  const { t, dir } = useTranslation();
+  const { t, dir, locale } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,22 +66,39 @@ export default function CTA() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      gsap.to(".email-form", {
-        scale: 0.95,
-        duration: 0.1,
-        ease: "power2.in",
-        onComplete: () => {
-          gsap.to(".email-form", {
-            scale: 1,
-            duration: 0.3,
-            ease: "elastic.out(1, 0.5)",
-          });
-        },
-      });
+    if (!email) return;
+
+    setSending(true);
+    setSendError("");
+
+    gsap.to(".email-form", {
+      scale: 0.95,
+      duration: 0.1,
+      ease: "power2.in",
+      onComplete: () => {
+        gsap.to(".email-form", {
+          scale: 1,
+          duration: 0.3,
+          ease: "elastic.out(1, 0.5)",
+        });
+      },
+    });
+
+    const res = await fetch("/api/waitlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, feedback: feedback.trim() || null, locale }),
+    });
+
+    setSending(false);
+
+    if (res.ok) {
       setSubmitted(true);
+    } else {
+      const body = await res.json();
+      setSendError(body.error ?? "Something went wrong. Please try again.");
     }
   };
 
@@ -143,6 +163,7 @@ export default function CTA() {
         </p>
 
         {!submitted ? (
+          <>
           <form
             onSubmit={handleSubmit}
             className="email-form"
@@ -181,8 +202,35 @@ export default function CTA() {
               }}
               required
             />
+            <textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder={t.cta.feedbackPlaceholder ?? "Any thoughts or features you'd like? (optional)"}
+              rows={3}
+              style={{
+                width: "100%",
+                background: "var(--card)",
+                border: "1px solid var(--border)",
+                color: "var(--text)",
+                padding: "13px 18px",
+                borderRadius: "7px",
+                fontSize: "14px",
+                outline: "none",
+                transition: "border-color 0.2s",
+                resize: "vertical",
+                fontFamily: "inherit",
+                textAlign: dir === "rtl" ? "right" : "left",
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "var(--gold)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+              }}
+            />
             <button
               type="submit"
+              disabled={sending}
               style={{
                 background: "var(--gold)",
                 color: "var(--night)",
@@ -191,20 +239,27 @@ export default function CTA() {
                 border: "none",
                 fontWeight: 600,
                 fontSize: "14px",
-                cursor: "pointer",
+                cursor: sending ? "not-allowed" : "pointer",
                 transition: "background 0.2s",
                 whiteSpace: "nowrap",
+                opacity: sending ? 0.7 : 1,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--gold-light)";
+                if (!sending) e.currentTarget.style.background = "var(--gold-light)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "var(--gold)";
               }}
             >
-              {t.cta.button}
+              {sending ? "…" : t.cta.button}
             </button>
           </form>
+          {sendError && (
+            <p style={{ color: "#e05c5c", fontSize: "13px", marginTop: "12px" }}>
+              {sendError}
+            </p>
+          )}
+          </>
         ) : (
           <div
             className="email-form"

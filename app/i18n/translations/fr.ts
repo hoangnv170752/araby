@@ -202,6 +202,7 @@ export const fr: Translations = {
     title: "Soyez le premier à savoir quand nous lançons.",
     subtitle: "Rejoignez la liste d'attente. Nous vous contacterons avant le lancement public avec un accès anticipé.",
     emailPlaceholder: "votre@email.com",
+    feedbackPlaceholder: "Des idées ou fonctionnalités souhaitées ? (optionnel)",
     button: "Rejoindre la liste",
     success: "✓ Vous êtes sur la liste ! Nous vous contacterons.",
   },

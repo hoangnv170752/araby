@@ -200,6 +200,7 @@ export const en = {
     title: "Be first to know when we launch.",
     subtitle: "Join the waitlist. We'll reach out before public launch with early access.",
     emailPlaceholder: "your@email.com",
+    feedbackPlaceholder: "Any thoughts or features you'd like? (optional)",
     button: "Join Waitlist",
     success: "✓ You're on the list! We'll be in touch.",
   },
