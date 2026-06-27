@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Araby — Your Islamic Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --night: #0D1117;
+    --deep: #111820;
+    --card: #161E28;
+    --border: rgba(255,255,255,0.06);
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --teal: #2A7F7F;
+    --teal-light: #3AAFAF;
+    --text: #E8E8E4;
+    --muted: #8A8F9A;
+    --white: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--night);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(13,17,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .nav-logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--gold); color: var(--night);
+    padding: 9px 22px; border-radius: 6px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Arabic geometric background pattern */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(42,127,127,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 60% 80%, rgba(201,168,76,0.04) 0%, transparent 35%);
+    pointer-events: none;
+  }
+
+  /* Geometric ornament */
+  .hero-ornament {
+    width: 80px; height: 80px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .hero-ornament svg { width: 100%; height: 100%; }
+
+  .hero-eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 3px;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .hero-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 28px;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+    opacity: 0.7;
+    direction: rtl;
+  }
+
+  .hero-sub {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 44px;
+  }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--night);
+    padding: 14px 32px; border-radius: 7px;
+    font-weight: 600; font-size: 15px; text-decoration: none;
+    transition: transform 0.15s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 32px; border-radius: 7px;
+    font-weight: 500; font-size: 15px; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── STATS STRIP ── */
+  .stats {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 0 20px;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px; font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* ── FEATURES ── */
+  .section { padding: 96px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 46px);
+    color: var(--white); line-height: 1.2;
+    margin-bottom: 56px;
+    max-width: 520px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .feature-card {
+    background: var(--card);
+    padding: 40px;
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: #1A2230; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--gold-dim);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; color: var(--white);
+    margin-bottom: 10px;
+  }
+  .feature-desc { color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .feature-api {
+    margin-top: 16px;
+    font-size: 11px; color: var(--teal-light);
+    font-family: 'Inter', monospace; letter-spacing: 0.5px;
+  }
+
+  /* ── MONETIZATION ── */
+  .mono-section {
+    background: var(--deep);
+    padding: 96px 40px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .mono-inner { max-width: 1100px; margin: 0 auto; }
+  .mono-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 56px;
+  }
+  .mono-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .mono-card:hover { border-color: rgba(201,168,76,0.3); }
+  .mono-card.featured {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, #161E28, #1C2535);
+  }
+  .mono-badge {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--gold); color: var(--night);
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .mono-label {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal-light); font-weight: 600; margin-bottom: 10px;
+  }
+  .mono-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; color: var(--white); margin-bottom: 12px;
+  }
+  .mono-desc { color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .mono-potential {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── MARKET SECTION ── */
+  .market-section { padding: 96px 40px; max-width: 1100px; margin: 0 auto; }
+  .market-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-top: 56px;
+  }
+  .market-numbers { display: flex; flex-direction: column; gap: 24px; }
+  .market-row {
+    display: flex; align-items: center; gap: 20px;
+    padding: 20px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .market-row-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; color: var(--gold); font-weight: 700;
+    white-space: nowrap; min-width: 90px;
+  }
+  .market-row-label { color: var(--muted); font-size: 14px; }
+  .market-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; color: var(--white); margin-bottom: 16px;
+  }
+  .market-text p { color: var(--muted); font-size: 15px; line-height: 1.8; margin-bottom: 14px; }
+  .market-highlight {
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px; padding: 16px 20px;
+    font-size: 14px; color: var(--text);
+    margin-top: 20px;
+  }
+  .market-highlight strong { color: var(--gold); }
+
+  /* ── ROADMAP ── */
+  .roadmap-section {
+    padding: 96px 40px;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+  }
+  .roadmap-inner { max-width: 700px; margin: 0 auto; }
+  .roadmap-items { display: flex; flex-direction: column; gap: 0; margin-top: 56px; }
+  .roadmap-item {
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 24px; padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .roadmap-item:last-child { border-bottom: none; }
+  .roadmap-phase {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .roadmap-content h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--white); margin-bottom: 8px;
+  }
+  .roadmap-content p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+  .roadmap-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag {
+    background: var(--gold-dim);
+    color: var(--gold-light);
+    font-size: 11px; padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+
+  /* ── CTA FOOTER ── */
+  .cta-section {
+    padding: 96px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 36px; color: var(--gold);
+    opacity: 0.5; margin-bottom: 24px;
+    direction: rtl;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 54px);
+    color: var(--white); margin-bottom: 20px; line-height: 1.15;
+  }
+  .cta-sub { color: var(--muted); font-size: 17px; max-width: 440px; margin: 0 auto 40px; }
+  /* ── TRY IT ── */
+  .try-section {
+    padding: 96px 40px;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .try-inner { max-width: 1100px; margin: 0 auto; }
+  .try-tabs {
+    display: flex; gap: 6px; margin-top: 48px; margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .try-tab {
+    padding: 10px 20px; border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border); border-bottom: none;
+    background: var(--card); color: var(--muted);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .try-tab:hover { color: var(--text); }
+  .try-tab.active { background: #1A2535; color: var(--gold); border-color: rgba(201,168,76,0.25); }
+  .try-panel {
+    background: #1A2535;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 0 12px 12px 12px;
+    padding: 32px;
+    display: none;
+  }
+  .try-panel.active { display: block; }
+  .try-panel-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 24px; gap: 20px; flex-wrap: wrap;
+  }
+  .try-panel-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--white); }
+  .try-panel-desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .try-endpoint {
+    font-family: monospace; font-size: 11px;
+    background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 4px;
+    color: var(--teal-light); white-space: nowrap;
+  }
+  .try-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .try-input-group { display: flex; flex-direction: column; gap: 5px; }
+  .try-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .try-input, .try-select {
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 14px; border-radius: 6px;
+    font-size: 14px; outline: none; font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s; min-width: 140px;
+  }
+  .try-input:focus, .try-select:focus { border-color: var(--gold); }
+  .try-select option { background: #1A2535; }
+  .try-btn {
+    background: var(--gold); color: var(--night);
+    padding: 9px 22px; border-radius: 6px;
+    border: none; font-weight: 600; font-size: 13px; cursor: pointer;
+    font-family: 'Inter', sans-serif; align-self: flex-end;
+    transition: background 0.2s; white-space: nowrap;
+  }
+  .try-btn:hover { background: var(--gold-light); }
+  .try-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .try-result {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 24px;
+    min-height: 80px;
+  }
+  .try-result-empty { color: var(--muted); font-size: 14px; text-align: center; padding: 16px 0; }
+  .try-loading { color: var(--gold); font-size: 13px; text-align: center; padding: 16px 0; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .prayer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .prayer-item {
+    background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 8px; padding: 14px 16px; text-align: center;
+  }
+  .prayer-name { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 6px; }
+  .prayer-time { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold); }
+  .prayer-next { border-color: var(--gold) !important; background: rgba(201,168,76,0.12) !important; }
+  .prayer-meta { margin-top: 16px; font-size: 12px; color: var(--muted); display: flex; gap: 20px; flex-wrap: wrap; }
+  .husna-display { text-align: center; padding: 16px; }
+  .husna-arabic { font-family: 'Amiri', serif; font-size: 52px; color: var(--gold); direction: rtl; margin-bottom: 12px; }
+  .husna-latin { font-size: 22px; color: var(--white); margin-bottom: 6px; }
+  .husna-meaning { font-size: 15px; color: var(--muted); }
+  .husna-num { display: inline-block; background: var(--gold-dim); color: var(--gold); font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-bottom: 16px; }
+  .ayah-display { padding: 8px; }
+  .ayah-arabic { font-family: 'Amiri', serif; font-size: 28px; color: var(--gold-light); direction: rtl; line-height: 1.8; text-align: right; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .ayah-translation { font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 16px; font-style: italic; }
+  .ayah-meta { font-size: 12px; color: var(--muted); }
+  .hijri-display { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .hijri-card { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.1); border-radius: 8px; padding: 20px; }
+  .hijri-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; }
+  .hijri-date { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--white); }
+  .hijri-day { font-size: 28px; color: var(--gold); font-family: 'Playfair Display', serif; }
+
+  .email-form {
+    display: flex; gap: 10px; max-width: 420px; margin: 0 auto;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .email-input {
+    flex: 1; min-width: 220px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 13px 18px; border-radius: 7px;
+    font-size: 14px; outline: none; font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .email-input:focus { border-color: var(--gold); }
+  .email-input::placeholder { color: var(--muted); }
+  .email-btn {
+    background: var(--gold); color: var(--night);
+    padding: 13px 24px; border-radius: 7px;
+    border: none; font-weight: 600; font-size: 14px; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .email-btn:hover { background: var(--gold-light); }
+
+  footer {
+    padding: 28px 40px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: 'Amiri', serif; font-size: 18px; color: var(--gold); }
+  .footer-note { color: var(--muted); font-size: 13px; }
+
+  /* ── DIVIDER ORNAMENT ── */
+  .ornament-divider {
+    text-align: center; padding: 20px;
+    color: rgba(201,168,76,0.3); font-size: 22px;
+    font-family: 'Amiri', serif;
+    letter-spacing: 12px;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .stats { grid-template-columns: 1fr; gap: 20px; padding: 32px 20px; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .stat-item:last-child { border-bottom: none; }
+    .section { padding: 60px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .mono-grid { grid-template-columns: 1fr; }
+    .market-grid { grid-template-columns: 1fr; }
+    .mono-section { padding: 60px 20px; }
+    .market-section { padding: 60px 20px; }
+    .roadmap-section { padding: 60px 20px; }
+    .cta-section { padding: 60px 20px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">أرابي <span>· Araby</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-ornament">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="40,4 52,28 78,28 58,46 66,72 40,56 14,72 22,46 2,28 28,28" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="40" cy="40" r="10" fill="none" stroke="#C9A84C" stroke-width="1"/>
+      <circle cx="40" cy="40" r="3" fill="#C9A84C" opacity="0.8"/>
+    </svg>
+  </div>
+  <p class="hero-eyebrow">Islamic Digital Platform</p>
+  <h1 class="hero-title">Faith.<br/><em>Connected.</em></h1>
+  <p class="hero-arabic">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+  <p class="hero-sub">Know your next Salah before it arrives. Read the Quran in 40+ editions. Live by the Hijri calendar. Discover a new name of Allah every day. Everything your faith needs, in one place.</p>
+  <div class="hero-actions">
+    <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+    <a href="#features" class="btn-secondary">See Features</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item">
+    <span class="stat-num">1.9B</span>
+    <div class="stat-label">Muslim users worldwide</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">$2T</span>
+    <div class="stat-label">Global halal economy</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">$7.3B</span>
+    <div class="stat-label">Spiritual wellness apps market by 2033</div>
+  </div>
+</div>
+
+
+<!-- TRY IT LIVE -->
+<section class="try-section" id="tryout">
+  <div class="try-inner">
+    <p class="section-eyebrow">Live Demo</p>
+    <h2 class="section-title" style="margin-bottom:8px;">Try it right now</h2>
+    <p style="color:var(--muted);font-size:15px;margin-bottom:0;">Real data, real APIs — no signup needed.</p>
+
+    <div class="try-tabs">
+      <button class="try-tab active" onclick="switchTab('prayer')">🕌 Prayer Times</button>
+      <button class="try-tab" onclick="switchTab('hijri')">🌙 Hijri Calendar</button>
+      <button class="try-tab" onclick="switchTab('husna')">✨ Asma Al Husna</button>
+      <button class="try-tab" onclick="switchTab('ayah')">📖 Random Ayah</button>
+    </div>
+
+    <!-- Prayer Times -->
+    <div class="try-panel active" id="panel-prayer">
+      <div class="try-panel-header">
+        <div>
+          <div class="try-panel-title">Prayer Times</div>
+          <div class="try-panel-desc">Get accurate Salah schedule for any city worldwide.</div>
+        </div>
+        <div class="try-endpoint">GET /timingsByCity/{date}</div>
+      </div>
+      <div class="try-controls">
+        <div class="try-input-group">
+          <label class="try-label">City</label>
+          <input class="try-input" id="prayer-city" value="Dubai" placeholder="e.g. Cairo"/>
+        </div>
+        <div class="try-input-group">
+          <label class="try-label">Country</label>
+          <input class="try-input" id="prayer-country" value="UAE" placeholder="e.g. Egypt" style="min-width:100px"/>
+        </div>
+        <div class="try-input-group">
+          <label class="try-label">Method</label>
+          <select class="try-select" id="prayer-method">
+            <option value="2">ISNA (North America)</option>
+            <option value="3">Muslim World League</option>
+            <option value="4" selected>Umm Al-Qura (Mecca)</option>
+            <option value="5">Egyptian Authority</option>
+            <option value="1">University of Islamic Sciences, Karachi</option>
+          </select>
+        </div>
+        <button class="try-btn" onclick="fetchPrayer()">Fetch Times</button>
+      </div>
+      <div class="try-result" id="result-prayer">
+        <div class="try-result-empty">Enter a city and click Fetch Times ↑</div>
+      </div>
+    </div>
+
+    <!-- Hijri Calendar -->
+    <div class="try-panel" id="panel-hijri">
+      <div class="try-panel-header">
+        <div>
+          <div class="try-panel-title">Hijri Calendar</div>
+          <div class="try-panel-desc">Convert any Gregorian date to the Islamic Hijri calendar.</div>
+        </div>
+        <div class="try-endpoint">GET /gToH/{date}</div>
+      </div>
+      <div class="try-controls">
+        <div class="try-input-group">
+          <label class="try-label">Date</label>
+          <input class="try-input" id="hijri-date" type="date"/>
+        </div>
+        <button class="try-btn" onclick="fetchHijri()">Convert Date</button>
+      </div>
+      <div class="try-result" id="result-hijri">
+        <div class="try-result-empty">Pick a date and click Convert ↑</div>
+      </div>
+    </div>
+
+    <!-- Asma Al Husna -->
+    <div class="try-panel" id="panel-husna">
+      <div class="try-panel-header">
+        <div>
+          <div class="try-panel-title">Asma Al Husna — 99 Names</div>
+          <div class="try-panel-desc">Explore each of the 99 beautiful names of Allah.</div>
+        </div>
+        <div class="try-endpoint">GET /asmaAlHusna/{number}</div>
+      </div>
+      <div class="try-controls">
+        <div class="try-input-group">
+          <label class="try-label">Name number (1–99)</label>
+          <input class="try-input" id="husna-num" type="number" min="1" max="99" value="1" style="min-width:100px"/>
+        </div>
+        <button class="try-btn" onclick="fetchHusna()">Show Name</button>
+        <button class="try-btn" style="background:var(--teal);color:var(--white)" onclick="document.getElementById('husna-num').value=Math.ceil(Math.random()*99);fetchHusna()">Random ↻</button>
+      </div>
+      <div class="try-result" id="result-husna">
+        <div class="try-result-empty">Choose a number and click Show Name ↑</div>
+      </div>
+    </div>
+
+    <!-- Random Ayah -->
+    <div class="try-panel" id="panel-ayah">
+      <div class="try-panel-header">
+        <div>
+          <div class="try-panel-title">Random Ayah</div>
+          <div class="try-panel-desc">A verse from the Quran, drawn randomly — with Arabic text and English translation.</div>
+        </div>
+        <div class="try-endpoint">GET /ayah/random/editions/{editions}</div>
+      </div>
+      <div class="try-controls">
+        <div class="try-input-group">
+          <label class="try-label">Translation</label>
+          <select class="try-select" id="ayah-edition">
+            <option value="en.sahih">Sahih International (English)</option>
+            <option value="en.pickthall">Pickthall (English)</option>
+            <option value="fr.hamidullah">Hamidullah (French)</option>
+            <option value="tr.diyanet">Diyanet (Turkish)</option>
+          </select>
+        </div>
+        <button class="try-btn" onclick="fetchAyah()">Draw Ayah ↻</button>
+      </div>
+      <div class="try-result" id="result-ayah">
+        <div class="try-result-empty">Click "Draw Ayah" to receive a verse ↑</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <p class="section-eyebrow">What's Inside</p>
+  <h2 class="section-title">Four pillars. One app.</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🕌</div>
+      <h3 class="feature-title">Prayer Times</h3>
+      <p class="feature-desc">Accurate prayer schedules for any city in the world, updated in real-time. Countdown to the next Salah, customizable notification alerts.</p>
+      <div class="feature-api">↳ Prayer Times API · AlAdhan</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌙</div>
+      <h3 class="feature-title">Hijri Calendar</h3>
+      <p class="feature-desc">Convert between Gregorian and Islamic dates. Track Ramadan, Eid, and all major Islamic holidays automatically.</p>
+      <div class="feature-api">↳ Hijri Calendar API · AlAdhan</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📖</div>
+      <h3 class="feature-title">Quran Reader</h3>
+      <p class="feature-desc">Full text of the Holy Quran with multiple editions, translations, search, and a random Ayah feature for daily reflection.</p>
+      <div class="feature-api">↳ AlQuran Cloud API</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3 class="feature-title">Asma Al Husna</h3>
+      <p class="feature-desc">Explore all 99 Beautiful Names of Allah — in Arabic script, transliteration, and meaning. One name highlighted each day.</p>
+      <div class="feature-api">↳ Asma Al Husna API · AlAdhan</div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament-divider">✦ ✦ ✦</div>
+
+<!-- MONETIZATION -->
+<section class="mono-section" id="market">
+  <div class="mono-inner">
+    <p class="section-eyebrow">How It Makes Money</p>
+    <h2 class="section-title" style="max-width: 480px;">Three revenue streams, built for this community</h2>
+    <div class="mono-grid">
+      <div class="mono-card">
+        <div class="mono-label">Stream 01</div>
+        <h3 class="mono-title">Freemium Subscriptions</h3>
+        <p class="mono-desc">Core features free forever. Premium tier unlocks ad-free experience, offline Quran audio, advanced prayer analytics, and widgets.</p>
+        <div class="mono-potential">Est. $2–5/month per user · High retention</div>
+      </div>
+      <div class="mono-card featured">
+        <div class="mono-badge">Best fit</div>
+        <div class="mono-label">Stream 02</div>
+        <h3 class="mono-title">Ramadan Surge Revenue</h3>
+        <p class="mono-desc">Islamic app sessions spike 15% during Ramadan. Time-limited premium bundles, donation features, and sponsored charitable campaigns drive massive seasonal revenue.</p>
+        <div class="mono-potential">$1.7B total app revenue in Ramadan 2025</div>
+      </div>
+      <div class="mono-card">
+        <div class="mono-label">Stream 03</div>
+        <h3 class="mono-title">B2B API & White Label</h3>
+        <p class="mono-desc">License the platform to mosques, Islamic schools, and halal businesses. White-label versions for regional markets in MENA and Southeast Asia.</p>
+        <div class="mono-potential">Higher margins · Recurring B2B contracts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET SIZE -->
+<section class="market-section">
+  <p class="section-eyebrow">Market Opportunity</p>
+  <h2 class="section-title">Why now is the right time</h2>
+  <div class="market-grid">
+    <div class="market-numbers">
+      <div class="market-row">
+        <div class="market-row-num">62M+</div>
+        <div class="market-row-label">Downloads for Muslim Pro — built with zero marketing budget</div>
+      </div>
+      <div class="market-row">
+        <div class="market-row-num">$300M</div>
+        <div class="market-row-label">Valuation of Wahed, a halal investment app</div>
+      </div>
+      <div class="market-row">
+        <div class="market-row-num">2.2B</div>
+        <div class="market-row-label">Projected global Muslim population by 2030</div>
+      </div>
+      <div class="market-row">
+        <div class="market-row-num">Daily</div>
+        <div class="market-row-label">Users open Islamic apps multiple times a day — exceptional retention</div>
+      </div>
+    </div>
+    <div class="market-text">
+      <h3>Islamic apps monetize better than they look</h3>
+      <p>Muslim Pro generates 90% of its revenue from ads and 10% from subscriptions — even though the majority of its users are in developing markets. The gap between downloads and revenue is the opportunity.</p>
+      <p>Users in the Arab Gulf, UK, and North America convert at much higher rates and pay far more per subscription than the global average.</p>
+      <div class="market-highlight">
+        <strong>Key insight:</strong> Only 8.1% of Quran Majeed's revenue came from India and Pakistan — despite those countries accounting for 35.6% of downloads. Target the diaspora first.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament-divider">✦ ✦ ✦</div>
+
+<!-- ROADMAP -->
+<section class="roadmap-section" id="roadmap">
+  <div class="roadmap-inner">
+    <p class="section-eyebrow">Build Plan</p>
+    <h2 class="section-title" style="max-width: 400px;">From MVP to ecosystem</h2>
+    <div class="roadmap-items">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 1</div>
+        <div class="roadmap-content">
+          <h4>Core Religious Tools</h4>
+          <p>Launch with the four API-powered features: prayer times, Hijri calendar, Quran reader, Asma Al Husna. Nail the UX and localization for Arabic, English, and one regional language.</p>
+          <div class="roadmap-tags">
+            <span class="tag">Prayer Times API</span>
+            <span class="tag">Hijri Calendar</span>
+            <span class="tag">Quran API</span>
+            <span class="tag">Al Husna API</span>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 2</div>
+        <div class="roadmap-content">
+          <h4>Engagement & Retention</h4>
+          <p>Add daily Ayah notifications, Tasbih counter, Dua library, and mosque locator. Introduce freemium tier. Run first Ramadan campaign.</p>
+          <div class="roadmap-tags">
+            <span class="tag">Notifications</span>
+            <span class="tag">Offline mode</span>
+            <span class="tag">Freemium</span>
+          </div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 3</div>
+        <div class="roadmap-content">
+          <h4>Community & Monetization</h4>
+          <p>Open community features: Islamic Q&A, local events, halal directory. Launch B2B white-label offering for mosques and Islamic schools. Explore charity donation integration.</p>
+          <div class="roadmap-tags">
+            <span class="tag">Community</span>
+            <span class="tag">B2B API</span>
+            <span class="tag">Donations</span>
+            <span class="tag">Marketplace</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="waitlist">
+  <p class="cta-arabic">السلام عليكم</p>
+  <h2 class="cta-title">Be first to know<br/>when we launch.</h2>
+  <p class="cta-sub">Join the waitlist. We'll reach out before public launch with early access.</p>
+  <div class="email-form">
+    <input class="email-input" type="email" placeholder="your@email.com"/>
+    <button class="email-btn">Join Waitlist</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">أرابي · Araby</div>
+  <div class="footer-note">Built with AlAdhan & AlQuran Cloud APIs · 2026</div>
+</footer>
+
+
+<script>
+// Set today's date as default for hijri input
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('hijri-date').value = today;
+});
+
+function switchTab(name) {
+  document.querySelectorAll('.try-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.try-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function setLoading(id) {
+  document.getElementById(id).innerHTML = '<div class="try-loading">Fetching live data…</div>';
+}
+function setError(id, msg) {
+  document.getElementById(id).innerHTML = '<div class="try-result-empty" style="color:#e57373">⚠ ' + msg + '</div>';
+}
+
+async function fetchPrayer() {
+  const city = document.getElementById('prayer-city').value.trim() || 'Dubai';
+  const country = document.getElementById('prayer-country').value.trim() || 'UAE';
+  const method = document.getElementById('prayer-method').value;
+  setLoading('result-prayer');
+  try {
+    const today = new Date();
+    const d = `${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}`;
+    const url = `https://api.aladhan.com/v1/timingsByCity/${d}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${method}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code !== 200) throw new Error(data.status);
+    const t = data.data.timings;
+    const date = data.data.date;
+    const prayers = [
+      {name:'Fajr', time:t.Fajr},
+      {name:'Sunrise', time:t.Sunrise},
+      {name:'Dhuhr', time:t.Dhuhr},
+      {name:'Asr', time:t.Asr},
+      {name:'Maghrib', time:t.Maghrib},
+      {name:'Isha', time:t.Isha},
+    ];
+    // find next prayer
+    const now = new Date();
+    const nowMins = now.getHours()*60 + now.getMinutes();
+    let nextIdx = -1;
+    for (let i=0; i<prayers.length; i++) {
+      const [h,m] = prayers[i].time.split(':').map(Number);
+      if (h*60+m > nowMins) { nextIdx = i; break; }
+    }
+    const cards = prayers.map((p, i) =>
+      `<div class="prayer-item ${i===nextIdx ? 'prayer-next' : ''}">
+        <div class="prayer-name">${p.name}${i===nextIdx ? ' · Next' : ''}</div>
+        <div class="prayer-time">${p.time}</div>
+      </div>`
+    ).join('');
+    document.getElementById('result-prayer').innerHTML =
+      `<div class="prayer-grid">${cards}</div>
+       <div class="prayer-meta">
+         <span>📍 ${city}, ${country}</span>
+         <span>📅 ${date.readable}</span>
+         <span>🌙 ${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year} H</span>
+       </div>`;
+  } catch(e) { setError('result-prayer', 'Could not fetch — check city/country name. ' + e.message); }
+}
+
+async function fetchHijri() {
+  const val = document.getElementById('hijri-date').value;
+  if (!val) return;
+  setLoading('result-hijri');
+  try {
+    const [y,m,d] = val.split('-');
+    const formatted = `${d}-${m}-${y}`;
+    const url = `https://api.aladhan.com/v1/gToH/${formatted}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code !== 200) throw new Error(data.status);
+    const g = data.data.gregorian;
+    const h = data.data.hijri;
+    document.getElementById('result-hijri').innerHTML =
+      `<div class="hijri-display">
+        <div class="hijri-card">
+          <div class="hijri-label">Gregorian</div>
+          <div class="hijri-day">${g.day}</div>
+          <div class="hijri-date">${g.month.en} ${g.year}</div>
+          <div style="color:var(--muted);font-size:12px;margin-top:6px">${g.weekday.en}</div>
+        </div>
+        <div class="hijri-card">
+          <div class="hijri-label">Hijri · Islamic</div>
+          <div class="hijri-day">${h.day}</div>
+          <div class="hijri-date">${h.month.en} ${h.year}</div>
+          <div style="color:var(--muted);font-size:12px;margin-top:6px">${h.weekday.en}</div>
+          <div style="font-family:'Amiri',serif;font-size:20px;color:var(--gold);direction:rtl;margin-top:8px">${h.month.ar}</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;font-size:12px;color:var(--muted)">Designation: ${h.designation.abbreviated} (${h.designation.expanded})</div>`;
+  } catch(e) { setError('result-hijri', 'Could not convert date. ' + e.message); }
+}
+
+async function fetchHusna() {
+  const num = parseInt(document.getElementById('husna-num').value) || 1;
+  if (num < 1 || num > 99) return setError('result-husna', 'Please enter a number between 1 and 99.');
+  setLoading('result-husna');
+  try {
+    const url = `https://api.aladhan.com/v1/asmaAlHusna/${num}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code !== 200) throw new Error(data.status);
+    const n = data.data[0];
+    document.getElementById('result-husna').innerHTML =
+      `<div class="husna-display">
+        <div class="husna-num">Name ${n.number} of 99</div>
+        <div class="husna-arabic">${n.name}</div>
+        <div class="husna-latin">${n.transliteration}</div>
+        <div class="husna-meaning">${n.en.meaning}</div>
+      </div>`;
+  } catch(e) { setError('result-husna', 'Could not fetch. ' + e.message); }
+}
+
+async function fetchAyah() {
+  const edition = document.getElementById('ayah-edition').value;
+  setLoading('result-ayah');
+  try {
+    const url = `https://api.alquran.cloud/v1/ayah/random/editions/quran-uthmani,${edition}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code !== 200) throw new Error(data.status);
+    const [arabic, trans] = data.data;
+    document.getElementById('result-ayah').innerHTML =
+      `<div class="ayah-display">
+        <div class="ayah-arabic">${arabic.text}</div>
+        <div class="ayah-translation">"${trans.text}"</div>
+        <div class="ayah-meta">
+          Surah ${arabic.surah.englishName} (${arabic.surah.name}) · Verse ${arabic.numberInSurah} · ${trans.edition.englishName}
+        </div>
+      </div>`;
+  } catch(e) { setError('result-ayah', 'Could not fetch Ayah. ' + e.message); }
+}
+</script>
+
+</body>
+</html>
