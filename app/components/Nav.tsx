@@ -95,7 +95,7 @@ export default function Nav() {
         ref={linksRef}
         style={{
           display: "flex",
-          gap: "32px",
+          gap: "clamp(12px, 2vw, 32px)",
           listStyle: "none",
         }}
         className="hidden md:flex"
@@ -110,6 +110,7 @@ export default function Nav() {
                 fontSize: "14px",
                 fontWeight: 500,
                 transition: "color 0.2s",
+                whiteSpace: "nowrap",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "var(--white)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
