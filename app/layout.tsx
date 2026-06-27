@@ -50,6 +50,10 @@ export const metadata: Metadata = {
     "Salah",
   ],
   authors: [{ name: "Araby" }],
+  icons: {
+    icon: "/thumbnail.png",
+    apple: "/thumbnail.png",
+  },
   openGraph: {
     title: "Araby — Your Islamic Companion",
     description: "Everything your faith needs, in one place.",
@@ -67,7 +71,7 @@ export default function RootLayout({
       lang="en"
       className={`${urbanist.variable} ${cairo.variable} ${amiri.variable} antialiased`}
     >
-      <body className="min-h-screen antialiased">
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
