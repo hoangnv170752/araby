@@ -37,7 +37,7 @@ const cairo = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Araby — Your Islamic Companion",
+  title: "Araby",
   description:
     "Know your next Salah before it arrives. Read the Quran in 40+ editions. Live by the Hijri calendar. Discover a new name of Allah every day.",
   keywords: [
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     apple: "/thumbnail.png",
   },
   openGraph: {
-    title: "Araby — Your Islamic Companion",
+    title: "Araby",
     description: "Everything your faith needs, in one place.",
     type: "website",
   },

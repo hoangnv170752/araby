@@ -80,6 +80,12 @@ export default function TryIt() {
     arabic: AyahData;
     translation: AyahData & { edition: { englishName: string } };
   } | null>(null);
+  const [ayahAudioUrl, setAyahAudioUrl] = useState<string | null>(null);
+  const [ayahPlaying, setAyahPlaying] = useState(false);
+  const ayahAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Husna audio state (Web Speech API)
+  const [husnaSpeaking, setHusnaSpeaking] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -299,18 +305,55 @@ export default function TryIt() {
   const fetchAyah = async () => {
     setLoading(true);
     setError(null);
+    setAyahAudioUrl(null);
+    setAyahPlaying(false);
     try {
-      const url = `https://api.alquran.cloud/v1/ayah/random/editions/quran-uthmani,${ayahEdition}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.code !== 200) throw new Error(data.status);
-      const [arabic, trans] = data.data;
+      const [textRes] = await Promise.all([
+        fetch(`https://api.alquran.cloud/v1/ayah/random/editions/quran-uthmani,${ayahEdition}`),
+      ]);
+      const textData = await textRes.json();
+      if (textData.code !== 200) throw new Error(textData.status);
+      const [arabic, trans] = textData.data;
       setAyahResult({ arabic, translation: trans });
+
+      // Fetch audio for the same ayah number
+      const ayahNum = arabic.number;
+      const audioData = await (await fetch(`https://api.alquran.cloud/v1/ayah/${ayahNum}/ar.alafasy`)).json();
+      if (audioData.code === 200 && audioData.data.audio) {
+        setAyahAudioUrl(audioData.data.audio);
+      }
     } catch (e) {
       setError(`Could not fetch Ayah. ${e}`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleAyahAudio = () => {
+    const audio = ayahAudioRef.current;
+    if (!audio || !ayahAudioUrl) return;
+    if (ayahPlaying) {
+      audio.pause();
+      setAyahPlaying(false);
+    } else {
+      audio.play();
+      setAyahPlaying(true);
+    }
+  };
+
+  const speakHusna = (text: string) => {
+    if (!window.speechSynthesis) return;
+    if (husnaSpeaking) {
+      window.speechSynthesis.cancel();
+      setHusnaSpeaking(false);
+      return;
+    }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = "ar-SA";
+    utt.rate = 0.8;
+    utt.onend = () => setHusnaSpeaking(false);
+    setHusnaSpeaking(true);
+    window.speechSynthesis.speak(utt);
   };
 
   const tabs: { name: TabName; icon: string; label: string }[] = [
@@ -1209,10 +1252,25 @@ export default function TryIt() {
                         {husnaResult.transliteration}
                       </div>
                       <div
-                        style={{ fontSize: "15px", color: "var(--muted)" }}
+                        style={{ fontSize: "15px", color: "var(--muted)", marginBottom: "16px" }}
                       >
                         {husnaResult.en.meaning}
                       </div>
+                      <button
+                        onClick={() => speakHusna(husnaResult.name)}
+                        style={{
+                          background: husnaSpeaking ? "var(--teal)" : "var(--gold-dim)",
+                          border: `1px solid ${husnaSpeaking ? "var(--teal-light)" : "rgba(201,168,76,0.3)"}`,
+                          color: husnaSpeaking ? "var(--white)" : "var(--gold)",
+                          borderRadius: "20px",
+                          padding: "6px 18px",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                        }}
+                      >
+                        {husnaSpeaking ? "⏹ Stop" : "🔊 Listen"}
+                      </button>
                     </div>
                   )}
                 </div>
@@ -1367,6 +1425,14 @@ export default function TryIt() {
                       {t.tryIt.ayah.emptyState}
                     </div>
                   )}
+                  {ayahAudioUrl && (
+                    <audio
+                      ref={ayahAudioRef}
+                      src={ayahAudioUrl}
+                      onEnded={() => setAyahPlaying(false)}
+                      style={{ display: "none" }}
+                    />
+                  )}
                   {!loading && !error && ayahResult && (
                     <div style={{ padding: "8px" }}>
                       <div
@@ -1396,13 +1462,33 @@ export default function TryIt() {
                         &quot;{ayahResult.translation.text}&quot;
                       </div>
                       <div
-                        style={{ fontSize: "12px", color: "var(--muted)" }}
+                        style={{ fontSize: "12px", color: "var(--muted)", marginBottom: "16px" }}
                       >
                         {t.tryIt.ayah.surah} {ayahResult.arabic.surah.englishName} (
                         {ayahResult.arabic.surah.name}) · {t.tryIt.ayah.verse}{" "}
                         {ayahResult.arabic.numberInSurah} ·{" "}
                         {ayahResult.translation.edition.englishName}
                       </div>
+                      {ayahAudioUrl && (
+                        <button
+                          onClick={toggleAyahAudio}
+                          style={{
+                            background: ayahPlaying ? "var(--teal)" : "var(--gold-dim)",
+                            border: `1px solid ${ayahPlaying ? "var(--teal-light)" : "rgba(201,168,76,0.3)"}`,
+                            color: ayahPlaying ? "var(--white)" : "var(--gold)",
+                            borderRadius: "20px",
+                            padding: "6px 18px",
+                            fontSize: "13px",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          {ayahPlaying ? "⏸ Pause" : "▶ Play Recitation"}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
