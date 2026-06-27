@@ -18,20 +18,20 @@ export async function POST(request: Request) {
   );
 
   if (dbError) {
-    console.error("Supabase error:", dbError.message);
+    console.error("[waitlist] db:", dbError.message);
     return Response.json({ error: "Failed to save. Please try again." }, { status: 500 });
   }
 
   // Send confirmation email
   const { data, error: emailError } = await resend.emails.send({
-    from: "Araby <onboarding@resend.dev>",
+    from: "Araby <noreply@araby.digital>",
     to: [email],
     subject: "You're on the Araby waitlist! 🌙",
     react: WaitlistEmail({ email }),
   });
 
   if (emailError) {
-    console.error("Resend error:", emailError.message);
+    console.error("[waitlist] Resend error:", JSON.stringify(emailError));
     // DB already saved — don't fail the whole request
     return Response.json({ id: null, warning: "Saved but email not sent." }, { status: 200 });
   }

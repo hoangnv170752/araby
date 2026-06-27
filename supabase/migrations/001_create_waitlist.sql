@@ -7,15 +7,8 @@ create table if not exists public.waitlist (
   created_at  timestamptz not null default now()
 );
 
--- Enable Row Level Security
-alter table public.waitlist enable row level security;
-
--- Allow inserts from anon (API route uses service key anyway, but good practice)
-create policy "Allow public insert"
-  on public.waitlist
-  for insert
-  to anon
-  with check (true);
+-- RLS disabled: inserts only happen from server-side API route (safe)
+alter table public.waitlist disable row level security;
 
 -- Index for fast lookup
 create index if not exists waitlist_email_idx on public.waitlist (email);

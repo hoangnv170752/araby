@@ -97,8 +97,12 @@ export default function CTA() {
     if (res.ok) {
       setSubmitted(true);
     } else {
-      const body = await res.json();
-      setSendError(body.error ?? "Something went wrong. Please try again.");
+      try {
+        const body = await res.json();
+        setSendError(body.error ?? "Something went wrong. Please try again.");
+      } catch {
+        setSendError("Something went wrong. Please try again.");
+      }
     }
   };
 
