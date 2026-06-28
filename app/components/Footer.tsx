@@ -43,6 +43,8 @@ export default function Footer() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "16px",
       }}
     >
       <div
@@ -56,11 +58,33 @@ export default function Footer() {
       </div>
       <div
         style={{
-          color: "var(--muted)",
-          fontSize: "13px",
+          display: "flex",
+          alignItems: "center",
+          gap: "24px",
+          flexWrap: "wrap",
         }}
       >
-        {t.footer.builtWith}
+        <a
+          href="mailto:contact@araby.digital"
+          style={{
+            color: "var(--muted)",
+            fontSize: "13px",
+            textDecoration: "none",
+            transition: "color 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--gold)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+        >
+          ✉ contact@araby.digital
+        </a>
+        <div
+          style={{
+            color: "var(--muted)",
+            fontSize: "13px",
+          }}
+        >
+          {t.footer.builtWith}
+        </div>
       </div>
     </footer>
   );
