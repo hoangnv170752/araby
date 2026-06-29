@@ -7,6 +7,8 @@ export const tr: Translations = {
     market: "Pazar",
     roadmap: "Yol Haritası",
     joinWaitlist: "Bekleme Listesine Katıl",
+    demo: "Demo",
+    tryIt: "Dene",
   },
 
   // Hero
@@ -41,7 +43,7 @@ export const tr: Translations = {
   // Features
   features: {
     eyebrow: "İçerik",
-    title: "Dört sütun. Tek uygulama.",
+    title: "Altı sütun. Tek uygulama.",
     prayerTimes: {
       title: "Namaz Vakitleri",
       desc: "Dünyanın her şehri için gerçek zamanlı güncellenen doğru namaz programları. Bir sonraki namaza geri sayım, özelleştirilebilir bildirim uyarıları.",
@@ -61,6 +63,16 @@ export const tr: Translations = {
       title: "Esmaü'l-Hüsna",
       desc: "Allah'ın 99 güzel ismini keşfedin — Arapça yazılış, transliterasyon ve anlam ile. Her gün bir isim öne çıkarılır.",
       api: "↳ Araby API · /asma-al-husna",
+    },
+    halalFinder: {
+      title: "Helal Restoran Bulucu",
+      desc: "Yakınınızdaki helal sertifikalı restoran ve yemek mekanlarını keşfedin. Mutfak türü, puan ve sertifikasyon standardına göre filtreleyin — dünyanın her yerinde.",
+      api: "↳ Araby API · /halal-places  · Yakında",
+    },
+    arabicLearning: {
+      title: "Arapça Öğren",
+      desc: "Başlangıç ve orta düzey öğrenciler için tasarlanmış interaktif dersler — Arap alfabesinden Kur'an kelime dağarcığına kadar, sesli telaffuz rehberleriyle.",
+      api: "↳ Araby API · /arabic-learning  · Yakında",
     },
   },
 
