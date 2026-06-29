@@ -57,6 +57,7 @@ export default function Nav() {
     { key: "features", label: t.nav.features, href: "#features" },
     { key: "market", label: t.nav.market, href: "#market" },
     { key: "roadmap", label: t.nav.roadmap, href: "#roadmap" },
+    { key: "tryit", label: t.nav.tryIt, href: "#tryout" },
   ];
 
   return (

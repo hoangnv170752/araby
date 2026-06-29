@@ -7,6 +7,8 @@ export const fr: Translations = {
     market: "Marché",
     roadmap: "Feuille de route",
     joinWaitlist: "Rejoindre la liste",
+    demo: "Démo",
+    tryIt: "Essayer",
   },
 
   // Hero
@@ -61,6 +63,16 @@ export const fr: Translations = {
       title: "Asma Al Husna",
       desc: "Explorez les 99 Beaux Noms d'Allah — en écriture arabe, translittération et signification. Un nom mis en avant chaque jour.",
       api: "↳ Araby API · /asma-al-husna",
+    },
+    halalFinder: {
+      title: "Trouver un restaurant halal",
+      desc: "Découvrez les restaurants et établissements certifiés halal près de chez vous. Filtrez par cuisine, note et norme de certification — où que vous soyez dans le monde.",
+      api: "↳ Araby API · /halal-places  · Bientôt disponible",
+    },
+    arabicLearning: {
+      title: "Apprendre l'arabe",
+      desc: "Leçons interactives conçues pour les débutants et les apprenants intermédiaires — de l'alphabet arabe au vocabulaire coranique, avec des guides de prononciation audio.",
+      api: "↳ Araby API · /arabic-learning  · Bientôt disponible",
     },
   },
 

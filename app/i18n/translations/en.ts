@@ -5,6 +5,8 @@ export const en = {
     market: "Market",
     roadmap: "Roadmap",
     joinWaitlist: "Join Waitlist",
+    demo: "Demo",
+    tryIt: "Try it",
   },
 
   // Hero
@@ -39,7 +41,7 @@ export const en = {
   // Features
   features: {
     eyebrow: "What's Inside",
-    title: "Four pillars. One app.",
+    title: "Six pillars. One app.",
     prayerTimes: {
       title: "Prayer Times",
       desc: "Accurate prayer schedules for any city in the world, updated in real-time. Countdown to the next Salah, customizable notification alerts.",
@@ -59,6 +61,16 @@ export const en = {
       title: "Asma Al Husna",
       desc: "Explore all 99 Beautiful Names of Allah — in Arabic script, transliteration, and meaning. One name highlighted each day.",
       api: "↳ Araby API · /asma-al-husna",
+    },
+    halalFinder: {
+      title: "Halal Restaurant Finder",
+      desc: "Discover halal-certified restaurants and eateries near you. Filter by cuisine, rating, and certification standard — wherever you are in the world.",
+      api: "↳ Araby API · /halal-places  · Coming soon",
+    },
+    arabicLearning: {
+      title: "Learn Arabic",
+      desc: "Interactive lessons built for beginners and intermediate learners — from the Arabic alphabet to Quranic vocabulary, with audio pronunciation guides.",
+      api: "↳ Araby API · /arabic-learning  · Coming soon",
     },
   },
 

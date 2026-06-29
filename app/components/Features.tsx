@@ -19,24 +19,42 @@ export default function Features() {
       title: t.features.prayerTimes.title,
       desc: t.features.prayerTimes.desc,
       api: t.features.prayerTimes.api,
+      soon: false,
     },
     {
       icon: "🌙",
       title: t.features.hijriCalendar.title,
       desc: t.features.hijriCalendar.desc,
       api: t.features.hijriCalendar.api,
+      soon: false,
     },
     {
       icon: "📖",
       title: t.features.quranReader.title,
       desc: t.features.quranReader.desc,
       api: t.features.quranReader.api,
+      soon: false,
     },
     {
       icon: "✨",
       title: t.features.asmaAlHusna.title,
       desc: t.features.asmaAlHusna.desc,
       api: t.features.asmaAlHusna.api,
+      soon: false,
+    },
+    {
+      icon: "🍽️",
+      title: t.features.halalFinder.title,
+      desc: t.features.halalFinder.desc,
+      api: t.features.halalFinder.api,
+      soon: true,
+    },
+    {
+      icon: "🔤",
+      title: t.features.arabicLearning.title,
+      desc: t.features.arabicLearning.desc,
+      api: t.features.arabicLearning.api,
+      soon: true,
     },
   ];
 
@@ -130,16 +148,17 @@ export default function Features() {
               cardsRef.current[index] = el;
             }}
             style={{
-              background: "var(--card)",
+              background: feature.soon ? "rgba(42,127,127,0.04)" : "var(--card)",
               padding: "40px",
               transition: "background 0.2s",
               cursor: "default",
+              position: "relative",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "#1A2230";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "var(--card)";
+              e.currentTarget.style.background = feature.soon ? "rgba(42,127,127,0.04)" : "var(--card)";
             }}
           >
             <div
@@ -159,6 +178,26 @@ export default function Features() {
             >
               {feature.icon}
             </div>
+            {feature.soon && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "16px",
+                  right: "16px",
+                  background: "rgba(42,127,127,0.15)",
+                  border: "1px solid rgba(58,175,175,0.3)",
+                  color: "var(--teal-light)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  padding: "3px 10px",
+                  borderRadius: "20px",
+                }}
+              >
+                Coming soon
+              </div>
+            )}
             <h3
               className="font-urbanist"
               style={{
