@@ -100,8 +100,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body: HalalFinderRequest = await request.json();
-
     if (!body.lat || !body.lng) {
       return Response.json(
         { error: "Location (lat, lng) required" },
@@ -174,7 +172,7 @@ export async function POST(request: Request) {
       lng: parseFloat(item.restaurant_long),
       distance: item.curr_location_distance,
       image: item.restaurant_image
-        ? `https://api.halalbites.co/storage/${item.restaurant_image}`
+        ? `https://halalbites.co/storage/${item.restaurant_image}`
         : null,
       timings: item.restaurant_timings,
       cuisines: item.cuisines?.map((c) => c.title) ?? [],

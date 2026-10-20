@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -44,6 +45,67 @@ const mapLoadingStyle: React.CSSProperties = {
   justifyContent: "center",
   border: "1px solid var(--border)",
 };
+
+// Restaurant Card Component with image error handling
+function RestaurantCard({
+  restaurant,
+  isSelected,
+  isOpenNow,
+  onSelect,
+}: {
+  restaurant: Restaurant;
+  isSelected: boolean;
+  isOpenNow: boolean;
+  onSelect: () => void;
+}) {
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <div
+      style={{
+        ...cardStyle,
+        borderColor: isSelected ? "var(--gold)" : "var(--border)",
+      }}
+      onClick={onSelect}
+    >
+      <div style={cardImageContainerStyle}>
+        {restaurant.image && !imageError ? (
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            style={cardImageStyle}
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div style={placeholderStyle}>🍽️</div>
+        )}
+      </div>
+      <div style={cardContentStyle}>
+        <div style={cardHeaderStyle}>
+          <h3 style={cardTitleStyle}>{restaurant.name}</h3>
+          <span style={isOpenNow ? openBadgeStyle : closedBadgeStyle}>
+            {isOpenNow ? "Open" : "Closed"}
+          </span>
+        </div>
+        <p style={cardAddressStyle}>{restaurant.address}</p>
+        <div style={cardFooterStyle}>
+          <span style={distanceStyle}>
+            📍 {restaurant.distance.toFixed(1)} km
+          </span>
+          {restaurant.cuisines.length > 0 && (
+            <div style={cuisinesStyle}>
+              {restaurant.cuisines.slice(0, 2).map((cuisine) => (
+                <span key={cuisine} style={cuisineTagStyle}>
+                  {cuisine}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function HalalFinderPage() {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -191,7 +253,7 @@ export default function HalalFinderPage() {
     const currentTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
 
     const todayTiming = timings.find((t) => t.day === day);
-    if (!todayTiming || todayTiming.opening_time === "00:00" && todayTiming.closing_time === "00:00") {
+    if (!todayTiming || (todayTiming.opening_time === "00:00" && todayTiming.closing_time === "00:00")) {
       return false;
     }
 
@@ -347,50 +409,13 @@ export default function HalalFinderPage() {
             </h2>
             <div style={listGridStyle}>
               {restaurants.map((restaurant) => (
-                <div
+                <RestaurantCard
                   key={restaurant.id}
-                  style={{
-                    ...cardStyle,
-                    borderColor: selectedRestaurant?.id === restaurant.id ? "var(--gold)" : "var(--border)",
-                  }}
-                  onClick={() => setSelectedRestaurant(restaurant)}
-                >
-                  {restaurant.image && (
-                    <div style={cardImageContainerStyle}>
-                      <img
-                        src={restaurant.image}
-                        alt={restaurant.name}
-                        style={cardImageStyle}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div style={cardContentStyle}>
-                    <div style={cardHeaderStyle}>
-                      <h3 style={cardTitleStyle}>{restaurant.name}</h3>
-                      <span style={isOpen(restaurant.timings) ? openBadgeStyle : closedBadgeStyle}>
-                        {isOpen(restaurant.timings) ? "Open" : "Closed"}
-                      </span>
-                    </div>
-                    <p style={cardAddressStyle}>{restaurant.address}</p>
-                    <div style={cardFooterStyle}>
-                      <span style={distanceStyle}>
-                        📍 {restaurant.distance.toFixed(1)} km
-                      </span>
-                      {restaurant.cuisines.length > 0 && (
-                        <div style={cuisinesStyle}>
-                          {restaurant.cuisines.slice(0, 2).map((cuisine) => (
-                            <span key={cuisine} style={cuisineTagStyle}>
-                              {cuisine}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  restaurant={restaurant}
+                  isSelected={selectedRestaurant?.id === restaurant.id}
+                  isOpenNow={isOpen(restaurant.timings)}
+                  onSelect={() => setSelectedRestaurant(restaurant)}
+                />
               ))}
             </div>
 
@@ -594,6 +619,15 @@ const cardImageStyle: React.CSSProperties = {
   width: "100%",
   height: "100%",
   objectFit: "cover",
+};
+
+const placeholderStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+  color: "var(--muted)",
+  fontSize: "32px",
 };
 
 const cardContentStyle: React.CSSProperties = {
