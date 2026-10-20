@@ -1,3 +1,4 @@
+import { db } from "../lib/prisma";
 import StatsCard from "./components/StatsCard";
 
 interface Stats {
@@ -6,29 +7,58 @@ interface Stats {
   exhaustedCodes: number;
   totalUsages: number;
   totalRemainingUses: number;
-  averageUsesPerCode: string | number;
   recentUsages: Array<{
     id: string;
     featureUsed: string | null;
-    usedAt: string;
+    usedAt: Date | string;
   }>;
 }
 
 async function getStats(): Promise<Stats | null> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/invite-codes/admin/stats`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
+    const [totalStats, activeStats, usageStats, recentUsages, allCodes] =
+      await Promise.all([
+        db.orm.public.InviteCode.aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCode
+          .where({ isActive: true })
+          .aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCodeUsage.aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCodeUsage
+          .orderBy((u) => u.usedAt.desc())
+          .limit(10)
+          .all(),
+        db.orm.public.InviteCode.all(),
+      ]);
+
+    const exhaustedCodes = allCodes.filter(
+      (c) => c.currentUses >= c.maxUses
+    ).length;
+
+    const totalRemainingUses = allCodes.reduce(
+      (sum, c) => sum + Math.max(0, c.maxUses - c.currentUses),
+      0
+    );
+
+    return {
+      totalCodes: totalStats.count,
+      activeCodes: activeStats.count,
+      exhaustedCodes,
+      totalUsages: usageStats.count,
+      totalRemainingUses,
+      recentUsages: recentUsages.map((u) => ({
+        id: u.id,
+        featureUsed: u.featureUsed,
+        usedAt: u.usedAt,
+      })),
+    };
+  } catch (error) {
+    console.error("[admin/dashboard] error:", error);
     return null;
   }
 }
 
-function formatTimeAgo(dateStr: string): string {
-  const date = new Date(dateStr);
+function formatTimeAgo(dateInput: Date | string): string {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
