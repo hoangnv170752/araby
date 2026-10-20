@@ -1,4 +1,5 @@
 import { db } from "../../../lib/prisma";
+import type { Varchar } from "@prisma/orm-postgres/target/codec-types";
 
 // GET: List all invite codes (admin only - add auth!)
 export async function GET(request: Request) {
@@ -12,19 +13,21 @@ export async function GET(request: Request) {
 
   try {
     const [codes, total] = await Promise.all([
-      db.invite_codes.findMany({
-        skip: offset,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-      }),
-      db.invite_codes.count(),
+      db.orm.public.InviteCode
+        .orderBy((c) => c.createdAt.desc())
+        .offset(offset)
+        .limit(limit)
+        .all(),
+      db.orm.public.InviteCode.aggregate((a) => ({ count: a.count() })),
     ]);
 
     // Get waitlist emails for each code
     const waitlistIds = codes.map((c) => c.waitlistId);
-    const waitlistUsers = await db.waitlist.findMany({
-      where: { id: { in: waitlistIds } },
-    });
+    const waitlistUsers = waitlistIds.length > 0
+      ? await db.orm.public.Waitlist
+          .where((w) => w.id.in(waitlistIds))
+          .all()
+      : [];
 
     const waitlistMap = new Map(waitlistUsers.map((w) => [w.id, w.email]));
 
@@ -38,8 +41,8 @@ export async function GET(request: Request) {
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit),
+        total: total.count,
+        pages: Math.ceil(total.count / limit),
       },
     });
   } catch (error) {
@@ -61,18 +64,21 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const existingCode = await db.invite_codes.findFirst({
-      where: { code: { equals: code.toUpperCase() } },
-    });
+    const existingCode = await db.orm.public.InviteCode
+      .where({ code: code.toUpperCase() as Varchar<8> })
+      .first();
 
     if (!existingCode) {
       return Response.json({ error: "Code not found" }, { status: 404 });
     }
 
-    const updated = await db.invite_codes.update({
-      where: { id: existingCode.id },
-      data: { isActive },
-    });
+    const updated = await db.orm.public.InviteCode
+      .where({ id: existingCode.id })
+      .update({ isActive });
+
+    if (!updated) {
+      return Response.json({ error: "Failed to update" }, { status: 500 });
+    }
 
     return Response.json({ code: updated.code, isActive: updated.isActive });
   } catch (error) {

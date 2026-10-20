@@ -4,21 +4,21 @@ import { db } from "../../../../lib/prisma";
 export async function GET() {
   // TODO: Add authentication check
   try {
-    const [totalCodes, activeCodes, totalUsages, recentUsages] =
+    const [totalStats, activeStats, usageStats, recentUsages, allCodes] =
       await Promise.all([
-        db.invite_codes.count(),
-        db.invite_codes.count({
-          where: { isActive: { equals: true } },
-        }),
-        db.invite_code_usages.count(),
-        db.invite_code_usages.findMany({
-          take: 10,
-          orderBy: { usedAt: "desc" },
-        }),
+        db.orm.public.InviteCode.aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCode
+          .where({ isActive: true })
+          .aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCodeUsage.aggregate((a) => ({ count: a.count() })),
+        db.orm.public.InviteCodeUsage
+          .orderBy((u) => u.usedAt.desc())
+          .limit(10)
+          .all(),
+        db.orm.public.InviteCode.all(),
       ]);
 
     // Calculate exhausted codes (currentUses >= maxUses)
-    const allCodes = await db.invite_codes.findMany();
     const exhaustedCodes = allCodes.filter(
       (c) => c.currentUses >= c.maxUses
     ).length;
@@ -30,13 +30,15 @@ export async function GET() {
     );
 
     return Response.json({
-      totalCodes,
-      activeCodes,
+      totalCodes: totalStats.count,
+      activeCodes: activeStats.count,
       exhaustedCodes,
-      totalUsages,
+      totalUsages: usageStats.count,
       totalRemainingUses,
       averageUsesPerCode:
-        totalCodes > 0 ? (totalUsages / totalCodes).toFixed(2) : 0,
+        totalStats.count > 0
+          ? (usageStats.count / totalStats.count).toFixed(2)
+          : 0,
       recentUsages: recentUsages.map((u) => ({
         id: u.id,
         featureUsed: u.featureUsed,

@@ -23,29 +23,26 @@ export async function createOrUpdateAdmin(
 ): Promise<{ success: boolean; message: string }> {
   const passwordHash = await hashPassword(password);
 
-  const existingUser = await db.waitlist.findFirst({
-    where: { email: { equals: email } },
-  });
+  const existingUser = await db.orm.public.Waitlist
+    .where({ email })
+    .first();
 
   if (existingUser) {
-    await db.waitlist.update({
-      where: { id: existingUser.id },
-      data: {
+    await db.orm.public.Waitlist
+      .where({ id: existingUser.id })
+      .update({
         passwordHash,
         role: "admin",
-      },
-    });
+      });
     return { success: true, message: "Admin password updated" };
   }
 
-  await db.waitlist.create({
-    data: {
-      email,
-      passwordHash,
-      role: "admin",
-      feedback: "Admin account",
-      locale: "en",
-    },
+  await db.orm.public.Waitlist.create({
+    email,
+    passwordHash,
+    role: "admin",
+    feedback: "Admin account",
+    locale: "en",
   });
 
   return { success: true, message: "Admin created" };
@@ -60,9 +57,9 @@ export async function authenticateUser(
   user?: { id: string; email: string; role: string };
   error?: string;
 }> {
-  const user = await db.waitlist.findFirst({
-    where: { email: { equals: email } },
-  });
+  const user = await db.orm.public.Waitlist
+    .where({ email })
+    .first();
 
   if (!user) {
     return { success: false, error: "USER_NOT_FOUND" };
@@ -90,8 +87,8 @@ export async function authenticateUser(
 
 // Check if user is admin
 export async function isAdmin(email: string): Promise<boolean> {
-  const user = await db.waitlist.findFirst({
-    where: { email: { equals: email } },
-  });
+  const user = await db.orm.public.Waitlist
+    .where({ email })
+    .first();
   return user?.role === "admin";
 }

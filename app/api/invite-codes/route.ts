@@ -11,18 +11,18 @@ export async function POST(request: Request) {
 
   try {
     // Find waitlist user
-    const waitlistUser = await db.waitlist.findFirst({
-      where: { email: { equals: email } },
-    });
+    const waitlistUser = await db.orm.public.Waitlist
+      .where({ email })
+      .first();
 
     if (!waitlistUser) {
       return Response.json({ error: "Email not on waitlist" }, { status: 404 });
     }
 
     // Check if already has a code
-    const existingCode = await db.invite_codes.findFirst({
-      where: { waitlistId: { equals: waitlistUser.id } },
-    });
+    const existingCode = await db.orm.public.InviteCode
+      .where({ waitlistId: waitlistUser.id })
+      .first();
 
     if (existingCode) {
       return Response.json({

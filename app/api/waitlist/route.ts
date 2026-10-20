@@ -15,9 +15,9 @@ export async function POST(request: Request) {
 
   try {
     // Check if user already exists
-    const existingUser = await db.waitlist.findFirst({
-      where: { email: { equals: email } },
-    });
+    const existingUser = await db.orm.public.Waitlist
+      .where({ email })
+      .first();
 
     let waitlistEntry;
     let isNewUser = false;
@@ -26,12 +26,10 @@ export async function POST(request: Request) {
       waitlistEntry = existingUser;
     } else {
       // Create new waitlist entry
-      waitlistEntry = await db.waitlist.create({
-        data: {
-          email,
-          feedback: feedback ?? null,
-          locale: locale ?? "en",
-        },
+      waitlistEntry = await db.orm.public.Waitlist.create({
+        email,
+        feedback: feedback ?? null,
+        locale: locale ?? "en",
       });
       isNewUser = true;
     }
@@ -42,9 +40,9 @@ export async function POST(request: Request) {
       inviteCode = await createInviteCode(waitlistEntry.id);
     } else {
       // Get existing invite code
-      const existingCode = await db.invite_codes.findFirst({
-        where: { waitlistId: { equals: waitlistEntry.id } },
-      });
+      const existingCode = await db.orm.public.InviteCode
+        .where({ waitlistId: waitlistEntry.id })
+        .first();
       inviteCode = existingCode;
     }
 

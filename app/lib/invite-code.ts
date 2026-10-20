@@ -1,4 +1,5 @@
 import { db } from "./prisma";
+import type { Varchar } from "@prisma/orm-postgres/target/codec-types";
 
 // Generate a unique, easy-to-type 8-character code
 // Uses uppercase letters and digits, excluding confusing chars (0/O, 1/I/L)
@@ -18,22 +19,20 @@ export async function createInviteCode(waitlistId: string) {
 
   // Ensure uniqueness (unlikely collision but safe)
   while (attempts < 5) {
-    const existing = await db.invite_codes.findFirst({
-      where: { code: { equals: code } },
-    });
+    const existing = await db.orm.public.InviteCode
+      .where({ code: code as Varchar<8> })
+      .first();
     if (!existing) break;
     code = generateInviteCode();
     attempts++;
   }
 
-  return db.invite_codes.create({
-    data: {
-      code,
-      waitlistId,
-      maxUses: 10,
-      currentUses: 0,
-      isActive: true,
-    },
+  return db.orm.public.InviteCode.create({
+    code: code as Varchar<8>,
+    waitlistId,
+    maxUses: 10,
+    currentUses: 0,
+    isActive: true,
   });
 }
 
@@ -47,9 +46,9 @@ export async function useInviteCode(
     userAgent?: string;
   }
 ) {
-  const inviteCode = await db.invite_codes.findFirst({
-    where: { code: { equals: code.toUpperCase() } },
-  });
+  const inviteCode = await db.orm.public.InviteCode
+    .where({ code: code.toUpperCase() as Varchar<8> })
+    .first();
 
   if (!inviteCode) {
     return { success: false, error: "INVALID_CODE" as const };
@@ -67,35 +66,32 @@ export async function useInviteCode(
     return { success: false, error: "CODE_EXHAUSTED" as const };
   }
 
-  // Transaction: increment usage and record
-  const [updatedCode] = await db.$transaction([
-    db.invite_codes.update({
-      where: { id: inviteCode.id },
-      data: { currentUses: inviteCode.currentUses + 1 },
-    }),
-    db.invite_code_usages.create({
-      data: {
-        inviteCodeId: inviteCode.id,
-        featureUsed: options?.featureUsed ?? null,
-        fingerprint: options?.fingerprint ?? null,
-        ipAddress: options?.ipAddress ?? null,
-        userAgent: options?.userAgent ?? null,
-      },
-    }),
-  ]);
+  // Update usage count
+  const updatedCode = await db.orm.public.InviteCode
+    .where({ id: inviteCode.id })
+    .update({ currentUses: inviteCode.currentUses + 1 });
+
+  // Create usage record
+  await db.orm.public.InviteCodeUsage.create({
+    inviteCodeId: inviteCode.id,
+    featureUsed: options?.featureUsed ?? null,
+    fingerprint: (options?.fingerprint ?? null) as Varchar<64> | null,
+    ipAddress: options?.ipAddress ?? null,
+    userAgent: options?.userAgent ?? null,
+  });
 
   return {
     success: true,
-    remainingUses: updatedCode.maxUses - updatedCode.currentUses,
+    remainingUses: inviteCode.maxUses - inviteCode.currentUses - 1,
     inviteCode: updatedCode,
   };
 }
 
 // Check remaining uses without consuming
 export async function checkInviteCode(code: string) {
-  const inviteCode = await db.invite_codes.findFirst({
-    where: { code: { equals: code.toUpperCase() } },
-  });
+  const inviteCode = await db.orm.public.InviteCode
+    .where({ code: code.toUpperCase() as Varchar<8> })
+    .first();
 
   if (!inviteCode) {
     return { valid: false, error: "INVALID_CODE" as const };
@@ -117,15 +113,15 @@ export async function checkInviteCode(code: string) {
 
 // Get invite code with waitlist info
 export async function getInviteCodeWithOwner(code: string) {
-  const inviteCode = await db.invite_codes.findFirst({
-    where: { code: { equals: code.toUpperCase() } },
-  });
+  const inviteCode = await db.orm.public.InviteCode
+    .where({ code: code.toUpperCase() as Varchar<8> })
+    .first();
 
   if (!inviteCode) return null;
 
-  const waitlist = await db.waitlist.findFirst({
-    where: { id: { equals: inviteCode.waitlistId } },
-  });
+  const waitlist = await db.orm.public.Waitlist
+    .where({ id: inviteCode.waitlistId })
+    .first();
 
   return {
     ...inviteCode,
