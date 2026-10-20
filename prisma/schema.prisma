@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Existing table - mapped to preserve current data
+model Waitlist {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String      @unique
+  passwordHash String?     @map("password_hash") // bcrypt hashed password for admin access
+  role         String      @default("user") // "user" | "admin"
+  feedback     String?
+  locale       String      @default("en")
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relation to InviteCode (optional - user may or may not have a code)
+  inviteCode InviteCode?
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("waitlist")
+}
+
+// Invite codes for waitlist users
+model InviteCode {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String    @unique @db.VarChar(8)
+  maxUses     Int       @default(10) @map("max_uses")
+  currentUses Int       @default(0) @map("current_uses")
+  isActive    Boolean   @default(true) @map("is_active")
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relation to waitlist user who owns this code
+  waitlistId String   @unique @map("waitlist_id") @db.Uuid
+  waitlist   Waitlist @relation(fields: [waitlistId], references: [id], onDelete: Cascade)
+
+  // Usage tracking
+  usages InviteCodeUsage[]
+
+  @@index([code])
+  @@index([isActive])
+  @@map("invite_codes")
+}
+
+// Track each usage of an invite code
+model InviteCodeUsage {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inviteCodeId String     @map("invite_code_id") @db.Uuid
+  inviteCode   InviteCode @relation(fields: [inviteCodeId], references: [id], onDelete: Cascade)
+
+  // Track what feature was used
+  featureUsed String? @map("feature_used")
+
+  // Fingerprint for rate limiting without accounts
+  fingerprint String? @db.VarChar(64)
+  ipAddress   String? @map("ip_address") @db.Inet
+  userAgent   String? @map("user_agent")
+
+  usedAt DateTime @default(now()) @map("used_at") @db.Timestamptz
+
+  @@index([inviteCodeId])
+  @@index([usedAt])
+  @@index([fingerprint])
+  @@map("invite_code_usages")
+}
