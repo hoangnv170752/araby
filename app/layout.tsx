@@ -15,12 +15,14 @@ const urbanist = localFont({
     { path: "../font/Urbanist/static/Urbanist-Italic.ttf", weight: "400", style: "italic" },
   ],
   variable: "--next-font-urbanist",
+  display: "swap",
 });
 
 const amiri = Amiri({
   subsets: ["arabic", "latin"],
   weight: ["400", "700"],
   variable: "--next-font-amiri",
+  display: "swap",
 });
 
 const cairo = localFont({
@@ -34,6 +36,7 @@ const cairo = localFont({
     { path: "../font/Cairo/static/Cairo-Black.ttf", weight: "900", style: "normal" },
   ],
   variable: "--next-font-cairo",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

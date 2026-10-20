@@ -1,93 +1,40 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import { useTranslation } from "../i18n";
 
 export default function Hero() {
   const { t, dir } = useTranslation();
-  const heroRef = useRef<HTMLElement>(null);
   const ornamentRef = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLParagraphElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const arabicRef = useRef<HTMLParagraphElement>(null);
-  const subRef = useRef<HTMLParagraphElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
 
+  // Decorative floating/glow — loaded lazily so GSAP stays out of the critical path
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(
-        [
-          ornamentRef.current,
-          eyebrowRef.current,
-          titleRef.current,
-          arabicRef.current,
-          subRef.current,
-          actionsRef.current,
-        ],
-        { opacity: 0, y: 40 }
-      );
+    let ctx: { revert: () => void } | undefined;
+    import("gsap").then(({ default: gsap }) => {
+      ctx = gsap.context(() => {
+        gsap.to(ornamentRef.current, {
+          y: -10,
+          duration: 3,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
 
-      const tl = gsap.timeline({ delay: 0.5 });
-
-      tl.to(ornamentRef.current, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        rotation: 0,
-        duration: 1,
-        ease: "elastic.out(1, 0.5)",
-      })
-        .to(
-          eyebrowRef.current,
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.5"
-        )
-        .to(
-          titleRef.current,
-          { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          "-=0.4"
-        )
-        .to(
-          arabicRef.current,
-          { opacity: 0.7, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.4"
-        )
-        .to(
-          subRef.current,
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.3"
-        )
-        .to(
-          actionsRef.current,
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.2"
-        );
-
-      gsap.to(ornamentRef.current, {
-        y: -10,
-        duration: 3,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        delay: 1.5,
+        gsap.to(ornamentRef.current?.querySelector("svg") || null, {
+          filter: "drop-shadow(0 0 20px rgba(201, 168, 76, 0.6))",
+          duration: 2,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
       });
+    });
 
-      gsap.to(ornamentRef.current?.querySelector("svg") || null, {
-        filter: "drop-shadow(0 0 20px rgba(201, 168, 76, 0.6))",
-        duration: 2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
+    return () => ctx?.revert();
   }, []);
 
   return (
     <section
-      ref={heroRef}
       dir={dir}
       style={{
         minHeight: "100vh",
@@ -119,11 +66,13 @@ export default function Hero() {
       {/* Ornament */}
       <div
         ref={ornamentRef}
+        className="hero-fade-in"
         style={{
           width: "80px",
           height: "80px",
           marginBottom: "28px",
           position: "relative",
+          animationDelay: "0.2s",
         }}
       >
         <svg
@@ -145,7 +94,7 @@ export default function Hero() {
       </div>
 
       <p
-        ref={eyebrowRef}
+        className="hero-fade-in"
         style={{
           fontSize: "12px",
           fontWeight: 600,
@@ -153,20 +102,22 @@ export default function Hero() {
           color: "var(--gold)",
           textTransform: "uppercase",
           marginBottom: "20px",
+          animationDelay: "0.35s",
         }}
       >
         {t.hero.eyebrow}
       </p>
 
       <h1
-        ref={titleRef}
-        className="font-urbanist"
+        className="font-urbanist hero-fade-in"
         style={{
           fontSize: "clamp(42px, 7vw, 88px)",
           fontWeight: 700,
           lineHeight: 1.05,
           color: "var(--white)",
           marginBottom: "12px",
+          animationDelay: "0.1s",
+          animationDuration: "0.5s",
         }}
       >
         {t.hero.titleLine1}
@@ -177,39 +128,41 @@ export default function Hero() {
       </h1>
 
       <p
-        ref={arabicRef}
-        className="font-amiri"
+        className="font-amiri hero-fade-in"
         style={{
           fontSize: "clamp(20px, 5vw, 28px)",
           color: "var(--gold-light)",
           marginBottom: "24px",
           opacity: 0.7,
           direction: "rtl",
+          animationDelay: "0.5s",
         }}
       >
         {t.hero.arabicText}
       </p>
 
       <p
-        ref={subRef}
+        className="hero-fade-in"
         style={{
           maxWidth: "520px",
           color: "var(--muted)",
           fontSize: "18px",
           lineHeight: 1.7,
           marginBottom: "44px",
+          animationDelay: "0.6s",
         }}
       >
         {t.hero.description}
       </p>
 
       <div
-        ref={actionsRef}
+        className="hero-fade-in"
         style={{
           display: "flex",
           gap: "14px",
           flexWrap: "wrap",
           justifyContent: "center",
+          animationDelay: "0.7s",
         }}
       >
         <a

@@ -1,4 +1,5 @@
 import { authenticateUser } from "../../../lib/auth";
+import { createSession } from "../../../lib/session";
 
 // POST: Login with email and password
 export async function POST(request: Request) {
@@ -22,12 +23,16 @@ export async function POST(request: Request) {
       return Response.json({ error: result.error }, { status: statusCode });
     }
 
-    // TODO: Generate JWT token or session here
-    // For now, just return user info
+    // Create session and set cookie
+    await createSession({
+      userId: result.user!.id,
+      email: result.user!.email,
+      role: result.user!.role,
+    });
+
     return Response.json({
       success: true,
       user: result.user,
-      // token: generateJWT(result.user), // Add JWT later
     });
   } catch (error) {
     console.error("[auth/login] error:", error);

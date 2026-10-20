@@ -1,57 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import { useTranslation } from "../i18n";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Nav() {
   const { t, dir } = useTranslation();
-  const navRef = useRef<HTMLElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
-  const linksRef = useRef<HTMLUListElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set([logoRef.current, linksRef.current?.children, ctaRef.current], {
-        opacity: 0,
-        y: -20,
-      });
-
-      const tl = gsap.timeline({ delay: 0.2 });
-
-      tl.to(logoRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power3.out",
-      })
-        .to(
-          linksRef.current?.children || [],
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.1,
-            ease: "power3.out",
-          },
-          "-=0.3"
-        )
-        .to(
-          ctaRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: "power3.out",
-          },
-          "-=0.2"
-        );
-    }, navRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const navLinks = [
     { key: "features", label: t.nav.features, href: "#features" },
@@ -62,7 +15,6 @@ export default function Nav() {
 
   return (
     <nav
-      ref={navRef}
       dir={dir}
       style={{
         position: "fixed",
@@ -80,8 +32,7 @@ export default function Nav() {
       }}
     >
       <div
-        ref={logoRef}
-        className="font-amiri"
+        className="font-amiri nav-fade-in"
         style={{
           fontSize: "clamp(16px, 4vw, 22px)",
           color: "var(--gold)",
@@ -93,13 +44,12 @@ export default function Nav() {
       </div>
 
       <ul
-        ref={linksRef}
         style={{
           display: "flex",
           gap: "clamp(12px, 2vw, 32px)",
           listStyle: "none",
         }}
-        className="hidden md:flex"
+        className="hidden md:flex nav-fade-in"
       >
         {navLinks.map((link) => (
           <li key={link.key}>
@@ -123,8 +73,9 @@ export default function Nav() {
       </ul>
 
       <div
-        ref={ctaRef}
+        className="nav-fade-in"
         style={{
+          animationDelay: "0.2s",
           display: "flex",
           alignItems: "center",
           gap: "12px",
